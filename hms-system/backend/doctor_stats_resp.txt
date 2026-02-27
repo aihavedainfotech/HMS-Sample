@@ -1,0 +1,16 @@
+{
+  "metrics": {
+    "avg_consultation_time": "15 min",
+    "critical_lab_values": 1,
+    "patient_satisfaction": "4.8/5.0",
+    "pending_approvals": 2
+  },
+  "stats": {
+    "completed_consultations": 1,
+    "emergency_consultations": 0,
+    "follow_up_due": 0,
+    "pending_consultations": 0,
+    "pending_lab_results": 0,
+    "today_appointments": 4
+  }
+}

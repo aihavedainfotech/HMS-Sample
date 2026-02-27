@@ -1,0 +1,8 @@
+{
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc3MDcwNTMzMSwianRpIjoiYzFlYWU5YWYtZDVlYS00MGJhLWI3NjQtMWVhMjI2NTkxZDM1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IkRPQzAwMSIsIm5iZiI6MTc3MDcwNTMzMSwiZXhwIjoxNzcwNzA4OTMxLCJyb2xlIjoiRG9jdG9yIiwiZGVwYXJ0bWVudCI6IkNhcmRpb2xvZ3kiLCJzdWJfZGVwYXJ0bWVudCI6bnVsbCwibmFtZSI6IkRyLiBSYWppdiBNZW5vbiJ9.Cqgnj6YJo5Ab3EoSc7kAd2nINgnxrvEDgMYRbFmRfb8",
+  "department": "Cardiology",
+  "name": "Dr. Rajiv Menon",
+  "role": "Doctor",
+  "staff_id": "DOC001",
+  "sub_department": null
+}

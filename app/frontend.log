@@ -1,0 +1,198 @@
+nohup: ignoring input
+
+> my-app@0.0.0 dev
+> vite --port 5173 --host
+
+
+  VITE v7.3.0  ready in 600 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.1.6:5173/
+11:19:03 AM [vite] (client) hmr update /src/pages/Register.tsx, /src/index.css
+11:19:05 AM [vite] (client) hmr update /src/pages/Register.tsx, /src/index.css
+11:21:57 AM [vite] (client) hmr update /src/components/PaymentMethod.tsx, /src/index.css
+11:21:57 AM [vite] (client) hmr update /src/pages/BookAppointment.tsx, /src/index.css
+11:21:57 AM [vite] (client) hmr update /src/pages/BookAppointment.tsx, /src/index.css
+11:21:57 AM [vite] (client) hmr update /src/pages/HospitalAbout.tsx, /src/index.css
+11:21:58 AM [vite] (client) hmr update /src/pages/HospitalAbout.tsx, /src/index.css
+11:21:59 AM [vite] (client) hmr update /src/components/PaymentMethod.tsx, /src/index.css
+11:21:59 AM [vite] (client) hmr update /src/pages/BookAppointment.tsx, /src/index.css
+11:21:59 AM [vite] (client) hmr update /src/pages/HospitalAbout.tsx, /src/index.css
+11:22:03 AM [vite] (client) hmr update /src/pages/HospitalContact.tsx, /src/index.css
+11:22:04 AM [vite] (client) hmr update /src/pages/HospitalDoctors.tsx, /src/index.css
+11:22:04 AM [vite] (client) hmr update /src/index.css
+11:22:04 AM [vite] (client) hmr update /src/index.css
+11:22:05 AM [vite] (client) hmr update /src/pages/HospitalContact.tsx, /src/index.css
+11:22:05 AM [vite] (client) hmr update /src/pages/HospitalDoctors.tsx, /src/index.css
+11:22:05 AM [vite] (client) hmr update /src/index.css
+11:22:10 AM [vite] (client) hmr update /src/pages/patient/MedicalRecords.tsx, /src/index.css
+11:22:10 AM [vite] (client) hmr update /src/pages/patient/MedicalRecords.tsx, /src/index.css
+11:22:10 AM [vite] (client) hmr update /src/pages/patient/PatientHome.tsx, /src/index.css
+11:22:11 AM [vite] (client) hmr update /src/pages/patient/MedicalRecords.tsx, /src/index.css
+11:22:11 AM [vite] (client) hmr update /src/pages/patient/PatientHome.tsx, /src/index.css
+11:22:17 AM [vite] (client) hmr update /src/pages/patient/PatientHome.tsx, /src/index.css
+11:22:18 AM [vite] (client) hmr update /src/pages/patient/PatientHome.tsx, /src/index.css
+11:22:42 AM [vite] (client) hmr update /src/pages/BookAppointment.tsx, /src/index.css
+11:22:43 AM [vite] (client) hmr update /src/pages/HospitalAbout.tsx, /src/index.css
+11:22:43 AM [vite] (client) hmr update /src/pages/HospitalDoctors.tsx, /src/index.css
+11:22:43 AM [vite] (client) hmr update /src/index.css
+11:22:43 AM [vite] (client) hmr update /src/pages/patient/MedicalRecords.tsx, /src/index.css
+11:22:44 AM [vite] (client) hmr update /src/pages/patient/PatientHome.tsx, /src/index.css
+11:22:44 AM [vite] (client) hmr update /src/pages/patient/MedicalRecords.tsx, /src/index.css
+11:22:44 AM [vite] (client) hmr update /src/pages/patient/PatientHome.tsx, /src/index.css
+11:22:46 AM [vite] (client) hmr update /src/pages/BookAppointment.tsx, /src/index.css
+11:22:46 AM [vite] (client) hmr update /src/pages/HospitalAbout.tsx, /src/index.css
+11:22:46 AM [vite] (client) hmr update /src/pages/HospitalDoctors.tsx, /src/index.css
+11:22:46 AM [vite] (client) hmr update /src/index.css
+11:22:46 AM [vite] (client) hmr update /src/pages/patient/MedicalRecords.tsx, /src/index.css
+11:22:46 AM [vite] (client) hmr update /src/pages/patient/PatientHome.tsx, /src/index.css
+11:23:17 AM [vite] (client) hmr update /src/pages/BookAppointment.tsx, /src/index.css
+11:23:17 AM [vite] (client) hmr update /src/pages/BookAppointment.tsx, /src/index.css
+11:23:17 AM [vite] (client) hmr update /src/pages/HospitalAbout.tsx, /src/index.css
+11:23:18 AM [vite] (client) hmr update /src/pages/patient/PatientHome.tsx, /src/index.css
+11:23:18 AM [vite] Internal server error: /home/ubuntu/Downloads/kimi_clone/app/src/pages/patient/PatientHome.tsx: Expecting Unicode escape sequence \uXXXX. (41:71)
+
+  39 |   const { patient } = usePatientAuth();
+  40 |   const navigate = useNavigate();
+> 41 |   const [appointments, setAppointments] = useState<Appointment[]>([]);\n  const [topDoctors, setTopDoctors] = useState<Doctor[]>([]);  // Placeholder for future use
+     |                                                                        ^
+  42 |   const [loading, setLoading] = useState(true);
+  43 |
+  44 |   const lastStatusRef = useRef<Record<string, string>>({});
+  Plugin: vite-plugin-inspect-dom-simple
+  File: /home/ubuntu/Downloads/kimi_clone/app/src/pages/patient/PatientHome.tsx:41:71
+  39 |    const { patient } = usePatientAuth();
+  40 |    const navigate = useNavigate();
+  41 |  ...pointments, setAppointments] = useState<Appointment[]>([]);\n  const [topDoctors, setTopDoctors] = useState<Doctor...
+     |                                                                 ^
+  42 |    const [loading, setLoading] = useState(true);
+  43 |  
+      at constructor (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:365:19)
+      at TypeScriptParserMixin.raise (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:6599:19)
+      at TypeScriptParserMixin.readWord1 (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:6559:16)
+      at TypeScriptParserMixin.readWord (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:6579:23)
+      at TypeScriptParserMixin.getTokenFromCode (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:6298:14)
+      at TypeScriptParserMixin.getTokenFromCode (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:4797:11)
+      at TypeScriptParserMixin.getTokenFromCode (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:9977:11)
+      at TypeScriptParserMixin.nextToken (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:5782:10)
+      at TypeScriptParserMixin.next (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:5692:10)
+      at TypeScriptParserMixin.eat (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:5696:12)
+      at TypeScriptParserMixin.isLineTerminator (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:6891:17)
+      at TypeScriptParserMixin.semicolon (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:6894:25)
+      at TypeScriptParserMixin.parseVarStatement (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:13221:10)
+      at TypeScriptParserMixin.parseVarStatement (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:9408:31)
+      at TypeScriptParserMixin.parseStatementContent (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12841:23)
+      at TypeScriptParserMixin.parseStatementContent (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:9508:18)
+      at TypeScriptParserMixin.parseStatementLike (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12757:17)
+      at TypeScriptParserMixin.parseStatementListItem (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12737:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:13306:61)
+      at TypeScriptParserMixin.parseBlockBody (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:13299:10)
+      at TypeScriptParserMixin.parseBlock (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:13287:10)
+      at TypeScriptParserMixin.parseFunctionBody (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12090:24)
+      at TypeScriptParserMixin.parseArrowExpression (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12065:10)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:11677:12)
+      at TypeScriptParserMixin.parseExprAtom (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:11321:23)
+      at TypeScriptParserMixin.parseExprAtom (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:4764:20)
+      at TypeScriptParserMixin.parseExprSubscripts (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:11071:23)
+      at TypeScriptParserMixin.parseUpdate (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:11056:21)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:11036:23)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:9827:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:10889:61)
+      at TypeScriptParserMixin.parseExprOps (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:10894:23)
+      at TypeScriptParserMixin.parseMaybeConditional (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:10871:23)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:10821:21)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:9776:20)
+      at /home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:10790:39
+      at TypeScriptParserMixin.allowInAnd (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12411:16)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:10790:17)
+      at TypeScriptParserMixin.parseVar (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:13374:91)
+      at TypeScriptParserMixin.parseVarStatement (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:13220:10)
+      at TypeScriptParserMixin.parseVarStatement (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:9408:31)
+      at TypeScriptParserMixin.parseStatementContent (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12841:23)
+      at TypeScriptParserMixin.parseStatementContent (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:9508:18)
+      at TypeScriptParserMixin.parseStatementLike (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12757:17)
+      at TypeScriptParserMixin.parseModuleItem (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12734:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:13306:36)
+      at TypeScriptParserMixin.parseBlockBody (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:13299:10)
+      at TypeScriptParserMixin.parseProgram (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12612:10)
+      at TypeScriptParserMixin.parseTopLevel (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12602:25)
+      at TypeScriptParserMixin.parse (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:14478:25)
+11:23:19 AM [vite] (client) hmr update /src/pages/BookAppointment.tsx, /src/index.css
+11:23:19 AM [vite] (client) hmr update /src/pages/HospitalAbout.tsx, /src/index.css
+11:23:19 AM [vite] (client) hmr update /src/pages/patient/PatientHome.tsx, /src/index.css
+11:23:19 AM [vite] Internal server error: /home/ubuntu/Downloads/kimi_clone/app/src/pages/patient/PatientHome.tsx: Expecting Unicode escape sequence \uXXXX. (41:71)
+
+  39 |   const { patient } = usePatientAuth();
+  40 |   const navigate = useNavigate();
+> 41 |   const [appointments, setAppointments] = useState<Appointment[]>([]);\n  const [topDoctors, setTopDoctors] = useState<Doctor[]>([]);  // Placeholder for future use
+     |                                                                        ^
+  42 |   const [loading, setLoading] = useState(true);
+  43 |
+  44 |   const lastStatusRef = useRef<Record<string, string>>({});
+  Plugin: vite-plugin-inspect-dom-simple
+  File: /home/ubuntu/Downloads/kimi_clone/app/src/pages/patient/PatientHome.tsx:41:71
+  39 |    const { patient } = usePatientAuth();
+  40 |    const navigate = useNavigate();
+  41 |  ...pointments, setAppointments] = useState<Appointment[]>([]);\n  const [topDoctors, setTopDoctors] = useState<Doctor...
+     |                                                                 ^
+  42 |    const [loading, setLoading] = useState(true);
+  43 |  
+      at constructor (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:365:19)
+      at TypeScriptParserMixin.raise (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:6599:19)
+      at TypeScriptParserMixin.readWord1 (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:6559:16)
+      at TypeScriptParserMixin.readWord (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:6579:23)
+      at TypeScriptParserMixin.getTokenFromCode (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:6298:14)
+      at TypeScriptParserMixin.getTokenFromCode (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:4797:11)
+      at TypeScriptParserMixin.getTokenFromCode (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:9977:11)
+      at TypeScriptParserMixin.nextToken (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:5782:10)
+      at TypeScriptParserMixin.next (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:5692:10)
+      at TypeScriptParserMixin.eat (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:5696:12)
+      at TypeScriptParserMixin.isLineTerminator (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:6891:17)
+      at TypeScriptParserMixin.semicolon (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:6894:25)
+      at TypeScriptParserMixin.parseVarStatement (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:13221:10)
+      at TypeScriptParserMixin.parseVarStatement (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:9408:31)
+      at TypeScriptParserMixin.parseStatementContent (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12841:23)
+      at TypeScriptParserMixin.parseStatementContent (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:9508:18)
+      at TypeScriptParserMixin.parseStatementLike (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12757:17)
+      at TypeScriptParserMixin.parseStatementListItem (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12737:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:13306:61)
+      at TypeScriptParserMixin.parseBlockBody (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:13299:10)
+      at TypeScriptParserMixin.parseBlock (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:13287:10)
+      at TypeScriptParserMixin.parseFunctionBody (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12090:24)
+      at TypeScriptParserMixin.parseArrowExpression (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12065:10)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:11677:12)
+      at TypeScriptParserMixin.parseExprAtom (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:11321:23)
+      at TypeScriptParserMixin.parseExprAtom (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:4764:20)
+      at TypeScriptParserMixin.parseExprSubscripts (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:11071:23)
+      at TypeScriptParserMixin.parseUpdate (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:11056:21)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:11036:23)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:9827:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:10889:61)
+      at TypeScriptParserMixin.parseExprOps (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:10894:23)
+      at TypeScriptParserMixin.parseMaybeConditional (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:10871:23)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:10821:21)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:9776:20)
+      at /home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:10790:39
+      at TypeScriptParserMixin.allowInAnd (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12411:16)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:10790:17)
+      at TypeScriptParserMixin.parseVar (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:13374:91)
+      at TypeScriptParserMixin.parseVarStatement (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:13220:10)
+      at TypeScriptParserMixin.parseVarStatement (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:9408:31)
+      at TypeScriptParserMixin.parseStatementContent (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12841:23)
+      at TypeScriptParserMixin.parseStatementContent (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:9508:18)
+      at TypeScriptParserMixin.parseStatementLike (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12757:17)
+      at TypeScriptParserMixin.parseModuleItem (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12734:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:13306:36)
+      at TypeScriptParserMixin.parseBlockBody (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:13299:10)
+      at TypeScriptParserMixin.parseProgram (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12612:10)
+      at TypeScriptParserMixin.parseTopLevel (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:12602:25)
+      at TypeScriptParserMixin.parse (/home/ubuntu/Downloads/kimi_clone/app/node_modules/@babel/parser/lib/index.js:14478:25)
+11:23:44 AM [vite] (client) hmr update /src/pages/patient/PatientHome.tsx, /src/index.css
+11:23:46 AM [vite] (client) hmr update /src/pages/patient/PatientHome.tsx, /src/index.css
+11:24:09 AM [vite] (client) hmr update /src/pages/patient/PatientHome.tsx, /src/index.css
+11:24:09 AM [vite] (client) hmr update /src/pages/BookAppointment.tsx, /src/index.css
+11:24:09 AM [vite] (client) hmr update /src/pages/BookAppointment.tsx, /src/index.css
+11:24:10 AM [vite] (client) hmr update /src/components/PaymentMethod.tsx, /src/index.css
+11:24:12 AM [vite] (client) hmr update /src/components/PaymentMethod.tsx, /src/index.css
+11:24:12 AM [vite] (client) hmr update /src/pages/BookAppointment.tsx, /src/index.css
+11:24:12 AM [vite] (client) hmr update /src/pages/patient/PatientHome.tsx, /src/index.css

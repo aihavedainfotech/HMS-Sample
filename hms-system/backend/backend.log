@@ -1,0 +1,9 @@
+nohup: ignoring input
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 394-955-784
+(27185) wsgi starting up on http://0.0.0.0:5000
+(27185) accepted ('127.0.0.1', 49352)
+(27185) accepted ('127.0.0.1', 35928)
+127.0.0.1 - - [23/Feb/2026 22:10:07] "POST /api/auth/patient/login HTTP/1.1" 401 200 0.048198
+DEBUG: Database absolute path: /home/ubuntu/Documents/kimi_clone/hms-system/database/hms.db
