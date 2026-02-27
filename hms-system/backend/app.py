@@ -3238,6 +3238,5 @@ def health_check():
 # MAIN ENTRY POINT
 # ============================================
 
-if __name__ == '__main__':
-    # Use SocketIO runner so real-time events work (eventlet recommended)
-    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    app.run()
