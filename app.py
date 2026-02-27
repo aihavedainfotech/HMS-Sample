@@ -3128,50 +3128,53 @@ def write_diagnosis():
 # WEBSOCKET HANDLERS FOR REAL-TIME UPDATES
 # ============================================
 
-@socketio.on('connect', namespace='/appointments')
-def handle_connect():
-    """Handle client connection to appointments namespace"""
-    print(f"Client connected to /appointments namespace")
-    return True
+# Only define SocketIO handlers if SocketIO is available (development)
+if socketio is not None:
+    
+    @socketio.on('connect', namespace='/appointments')
+    def handle_connect():
+        """Handle client connection to appointments namespace"""
+        print(f"Client connected to /appointments namespace")
+        return True
 
 
-@socketio.on('join_doctor_room', namespace='/appointments')
-def handle_join_doctor_room(data):
-    """Allow a doctor client to join a room for targeted updates.
-    Expected payload: { 'doctor_id': '<staff_id>' }
-    """
-    try:
-        doctor_id = data.get('doctor_id') if data else None
-        if doctor_id:
-            room_name = f"doctor_{doctor_id}"
-            join_room(room_name)
-            print(f"Socket joined room: {room_name}")
-            socketio.emit('room_joined', {'room': room_name}, namespace='/appointments')
-    except Exception as e:
-        print(f"Error in join_doctor_room: {e}")
+    @socketio.on('join_doctor_room', namespace='/appointments')
+    def handle_join_doctor_room(data):
+        """Allow a doctor client to join a room for targeted updates.
+        Expected payload: { 'doctor_id': '<staff_id>' }
+        """
+        try:
+            doctor_id = data.get('doctor_id') if data else None
+            if doctor_id:
+                room_name = f"doctor_{doctor_id}"
+                join_room(room_name)
+                print(f"Socket joined room: {room_name}")
+                safe_emit('room_joined', {'room': room_name}, namespace='/appointments')
+        except Exception as e:
+            print(f"Error in join_doctor_room: {e}")
 
 
-@socketio.on('leave_doctor_room', namespace='/appointments')
-def handle_leave_doctor_room(data):
-    try:
-        doctor_id = data.get('doctor_id') if data else None
-        if doctor_id:
-            room_name = f"doctor_{doctor_id}"
-            leave_room(room_name)
-            print(f"Socket left room: {room_name}")
-            socketio.emit('room_left', {'room': room_name}, namespace='/appointments')
-    except Exception as e:
-        print(f"Error in leave_doctor_room: {e}")
+    @socketio.on('leave_doctor_room', namespace='/appointments')
+    def handle_leave_doctor_room(data):
+        try:
+            doctor_id = data.get('doctor_id') if data else None
+            if doctor_id:
+                room_name = f"doctor_{doctor_id}"
+                leave_room(room_name)
+                print(f"Socket left room: {room_name}")
+                safe_emit('room_left', {'room': room_name}, namespace='/appointments')
+        except Exception as e:
+            print(f"Error in leave_doctor_room: {e}")
 
-@socketio.on('disconnect', namespace='/appointments')
-def handle_disconnect():
-    """Handle client disconnection from appointments namespace"""
-    print(f"Client disconnected from /appointments namespace")
+    @socketio.on('disconnect', namespace='/appointments')
+    def handle_disconnect():
+        """Handle client disconnection from appointments namespace"""
+        print(f"Client disconnected from /appointments namespace")
 
-@socketio.on('request_queue_update', namespace='/appointments')
-def handle_queue_update_request(data):
-    """Handle request for current queue update"""
-    doctor_id = data.get('doctor_id', '') if data else ''
+    @socketio.on('request_queue_update', namespace='/appointments')
+    def handle_queue_update_request(data):
+        """Handle request for current queue update"""
+        doctor_id = data.get('doctor_id', '') if data else ''
     
     conn = get_db_connection()
     cursor = get_dict_cursor(conn)
