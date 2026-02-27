@@ -21,7 +21,7 @@ import re
 from functools import wraps
 import traceback
 
-DB_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), '../database/hms.db'))
+DB_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'hospital_db.sqlite'))
 
 from flask.json.provider import DefaultJSONProvider
 
@@ -40,8 +40,15 @@ class CustomJSONProvider(DefaultJSONProvider):
 app = Flask(__name__)
 app.json = CustomJSONProvider(app)
 
-# Initialize SocketIO for real-time notifications
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+# Production configuration
+if os.getenv('RENDER'):
+    # Render-specific configuration
+    app.config['DEBUG'] = False
+    # Don't initialize SocketIO for production with gunicorn
+    socketio = None
+else:
+    # Local development with SocketIO
+    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
 
 # Enable CORS
 CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -59,6 +66,21 @@ limiter = Limiter(
     default_limits=["10000 per day", "2000 per hour"],
     storage_uri="memory://"
 )
+
+# Helper function for safe SocketIO emission
+def safe_emit(event, data, namespace=None, room=None):
+    """Safely emit SocketIO events - works in both dev and production"""
+    if socketio is not None:
+        try:
+            if namespace and room:
+                socketio.emit(event, data, namespace=namespace, room=room)
+            elif namespace:
+                socketio.emit(event, data, namespace=namespace)
+            else:
+                socketio.emit(event, data)
+        except Exception as e:
+            print(f"SocketIO emit error: {e}")
+    # In production, silently skip SocketIO emissions
 
 # Database Connection Helper
 def get_db_connection():
@@ -731,7 +753,7 @@ def create_appointment():
         
         # Emit real-time event: new appointment (receptionists should listen)
         try:
-            socketio.emit('new_appointment', {
+            safe_emit('new_appointment', {
                 'appointment_id': appointment_id,
                 'patient_id': patient_id,
                 'doctor_id': data.get('doctor_id'),
