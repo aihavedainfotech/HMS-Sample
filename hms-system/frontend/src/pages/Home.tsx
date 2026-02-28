@@ -151,19 +151,19 @@ export default function Home() {
               </Badge>
 
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-slate-900">
-                Welcome to the <br />
-                <span className="text-blue-600">Staff Portal</span>
+                Welcome to <br />
+                <span className="text-blue-600">CityCare Hospital</span>
               </h1>
 
               <p className="text-lg text-slate-600 max-w-xl">
-                Secure access for authorized personnel. Manage patient records, appointments, and hospital operations efficiently.
+                Your health, our priority. Quality healthcare with compassion and excellence.
               </p>
 
               <div className="flex flex-wrap gap-4 pt-4">
                 <Button size="lg" className="bg-blue-600 hover:bg-blue-700" asChild>
-                  <Link to="/login">
+                  <Link to="/patient/login">
                     <User className="h-5 w-5 mr-2" />
-                    Staff Login
+                    Patient Portal
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
@@ -195,8 +195,8 @@ export default function Home() {
             <div className={`relative transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
               <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
                 <img
-                  src="https://placehold.co/800x600/2563eb/ffffff?text=Medical+Staff+Dashboard"
-                  alt="Staff Portal Interface"
+                  src="https://placehold.co/800x600/2563eb/ffffff?text=CityCare+Hospital+Services"
+                  alt="CityCare Hospital Services"
                   className="w-full h-auto object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
