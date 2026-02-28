@@ -3125,98 +3125,11 @@ def write_diagnosis():
         conn.close()
 
 # ============================================
-# WEBSOCKET HANDLERS FOR REAL-TIME UPDATES
+# WEBSOCKET HANDLERS FOR REAL-TIME UPDATES (DISABLED IN PRODUCTION)
 # ============================================
 
-# Only define SocketIO handlers if SocketIO is available (development)
-if socketio is not None:
-    
-    @socketio.on('connect', namespace='/appointments')
-    def handle_connect():
-        """Handle client connection to appointments namespace"""
-        print(f"Client connected to /appointments namespace")
-        return True
-
-
-    @socketio.on('join_doctor_room', namespace='/appointments')
-    def handle_join_doctor_room(data):
-        """Allow a doctor client to join a room for targeted updates.
-        Expected payload: { 'doctor_id': '<staff_id>' }
-        """
-        try:
-            doctor_id = data.get('doctor_id') if data else None
-            if doctor_id:
-                room_name = f"doctor_{doctor_id}"
-                join_room(room_name)
-                print(f"Socket joined room: {room_name}")
-                safe_emit('room_joined', {'room': room_name}, namespace='/appointments')
-        except Exception as e:
-            print(f"Error in join_doctor_room: {e}")
-
-
-    @socketio.on('leave_doctor_room', namespace='/appointments')
-    def handle_leave_doctor_room(data):
-        try:
-            doctor_id = data.get('doctor_id') if data else None
-            if doctor_id:
-                room_name = f"doctor_{doctor_id}"
-                leave_room(room_name)
-                print(f"Socket left room: {room_name}")
-                safe_emit('room_left', {'room': room_name}, namespace='/appointments')
-        except Exception as e:
-            print(f"Error in leave_doctor_room: {e}")
-
-    @socketio.on('disconnect', namespace='/appointments')
-    def handle_disconnect():
-        """Handle client disconnection from appointments namespace"""
-        print(f"Client disconnected from /appointments namespace")
-
-    @socketio.on('request_queue_update', namespace='/appointments')
-    def handle_queue_update_request(data):
-        """Handle request for current queue update"""
-        doctor_id = data.get('doctor_id', '') if data else ''
-    
-    conn = get_db_connection()
-    cursor = get_dict_cursor(conn)
-    
-    try:
-        query = """
-            SELECT q.*, 
-                   p.first_name || ' ' || p.last_name as patient_name,
-                   p.date_of_birth as patient_dob, p.gender as patient_gender,
-                   a.appointment_type, a.reason_for_visit,
-                   s.first_name || ' ' || s.last_name as doctor_name,
-                   d.dept_name as department_name
-            FROM queue_management q
-            JOIN patients p ON q.patient_id = p.patient_id
-            JOIN appointments a ON q.appointment_id = a.appointment_id
-            JOIN staff s ON q.doctor_id = s.staff_id
-            LEFT JOIN departments d ON a.department_id = d.id
-            WHERE q.queue_date = ?
-        """
-        params = [datetime.now().strftime('%Y-%m-%d')]
-        
-        if doctor_id:
-            query += " AND q.doctor_id = ?"
-            params.append(doctor_id)
-        
-        query += " ORDER BY q.token_number"
-        
-        cursor.execute(query, params)
-        queue = cursor.fetchall()
-        
-        # Emit the queue data back to the requesting client
-        socketio.emit('queue_update', {
-            'queue': [dict(row) for row in queue],
-            'timestamp': datetime.now().isoformat()
-        })
-        
-    except Exception as e:
-        print(f"Error in handle_queue_update_request: {e}")
-        socketio.emit('queue_update_error', {'error': str(e)})
-    finally:
-        cursor.close()
-        conn.close()
+# SocketIO handlers disabled for production deployment
+# Real-time features available only in development environment
 
 # ============================================
 # ERROR HANDLERS
@@ -3237,6 +3150,22 @@ def ratelimit_handler(error):
 # ============================================
 # HEALTH CHECK
 # ============================================
+
+@app.route('/', methods=['GET'])
+def root():
+    """Root endpoint"""
+    return jsonify({
+        'message': 'HMS Backend API is running',
+        'status': 'healthy',
+        'version': '1.0.0',
+        'endpoints': {
+            'health': '/api/health',
+            'auth': '/api/auth/',
+            'patients': '/api/patients/',
+            'doctors': '/api/doctors/',
+            'appointments': '/api/appointments/'
+        }
+    }), 200
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
