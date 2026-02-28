@@ -16,8 +16,8 @@ import HospitalContact from '@/pages/HospitalContact';
 // import BookAppointment from '@/pages/BookAppointment';
 
 // Patient Auth Pages
-// import PatientLogin from '@/pages/auth/PatientLogin';
-// import PatientRegister from '@/pages/auth/PatientRegister';
+import PatientLogin from '@/pages/auth/PatientLogin';
+import PatientRegister from '@/pages/auth/PatientRegister';
 
 // Patient Dashboard
 // import PatientDashboard from '@/layouts/PatientDashboard';
@@ -38,12 +38,7 @@ import AdmissionDashboard from '@/layouts/AdmissionDashboard';
 import NurseDashboard from '@/layouts/NurseDashboard';
 
 // Portal Selection Components
-const PatientPortal = () => (
-  <div className="min-h-screen">
-    <HospitalNavbar />
-    <Home />
-  </div>
-);
+const PatientPortal = () => <PatientLogin />;
 
 const StaffPortal = () => <StaffLogin />;
 
