@@ -1,6 +1,7 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
 // Navigation
 import HospitalNavbar from '@/components/HospitalNavbar';
 
@@ -41,7 +42,28 @@ import NurseDashboard from '@/layouts/NurseDashboard';
 const PatientPortal = () => (
   <div className="min-h-screen">
     <HospitalNavbar />
-    <Home />
+    <div className="container mx-auto py-8">
+      <div className="text-center">
+        <h1 className="text-4xl md:text-5xl font-bold text-blue-600 mb-4">Welcome to CityCare Hospital</h1>
+        <p className="text-xl text-gray-600 mb-8">Your health, our priority. Quality healthcare with compassion.</p>
+        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-semibold text-blue-600 mb-4">Patient Services</h2>
+            <p className="text-gray-600 mb-4">Book appointments, view records, manage your health</p>
+            <Link to="/patient/login">
+              <Button className="w-full">Patient Portal</Button>
+            </Link>
+          </div>
+          <div className="bg-gray-50 p-6 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-semibold text-gray-600 mb-4">Hospital Information</h2>
+            <p className="text-gray-600 mb-4">Learn about our services, doctors, and facilities</p>
+            <Link to="/about">
+              <Button variant="outline" className="w-full">About Hospital</Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 );
 
@@ -70,6 +92,10 @@ const App = () => {
           
           {/* Default Route - Patient Portal */}
           <Route path="/" element={<PatientPortal />} />
+          
+          {/* Patient Auth Routes */}
+          <Route path="/patient/login" element={<PatientLogin />} />
+          <Route path="/patient/register" element={<PatientRegister />} />
           
           {/* Patient Dashboard Routes */}
           <Route path="/patient/dashboard/*" element={<PatientDashboard />} />
