@@ -237,6 +237,12 @@ export default function StaffLogin() {
               </div>
             </CardContent>
           </Card>
+          
+          <div className="mt-4 text-center">
+            <a href="/" className="text-sm text-blue-600 hover:text-blue-800">
+              ← Back to Hospital Website
+            </a>
+          </div>
         </div>
       </div>
     </div>
