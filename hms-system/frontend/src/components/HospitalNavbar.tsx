@@ -53,9 +53,9 @@ const HospitalNavbar = () => {
             ))}
 
             <div className="flex items-center space-x-3 ml-8 pl-8 border-l border-gray-200">
-              <Button onClick={() => navigate('/login')}>
+              <Button onClick={() => navigate('/patient/login')}>
                 <User className="h-4 w-4 mr-2" />
-                Staff Login
+                Patient Login
               </Button>
             </div>
           </div>
@@ -90,12 +90,12 @@ const HospitalNavbar = () => {
                 <Button
                   className="w-full justify-start"
                   onClick={() => {
-                    navigate('/login');
+                    navigate('/patient/login');
                     setIsMenuOpen(false);
                   }}
                 >
                   <User className="h-4 w-4 mr-2" />
-                  Staff Login
+                  Patient Login
                 </Button>
               </div>
             </div>
