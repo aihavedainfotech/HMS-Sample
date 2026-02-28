@@ -20,7 +20,7 @@ import PatientLogin from '@/pages/auth/PatientLogin';
 import PatientRegister from '@/pages/auth/PatientRegister';
 
 // Patient Dashboard
-// import PatientDashboard from '@/layouts/PatientDashboard';
+import PatientDashboard from '@/layouts/PatientDashboard';
 // import PatientHome from '@/pages/patient/PatientHome';
 // import PatientAppointments from '@/pages/patient/PatientAppointments';
 // import MedicalRecords from '@/pages/patient/MedicalRecords';
@@ -38,9 +38,25 @@ import AdmissionDashboard from '@/layouts/AdmissionDashboard';
 import NurseDashboard from '@/layouts/NurseDashboard';
 
 // Portal Selection Components
-const PatientPortal = () => <PatientLogin />;
+const PatientPortal = () => (
+  <div className="min-h-screen">
+    <HospitalNavbar />
+    <Home />
+  </div>
+);
 
-const StaffPortal = () => <StaffLogin />;
+const StaffPortal = () => (
+  <div className="min-h-screen">
+    <HospitalNavbar />
+    <div className="container mx-auto py-8">
+      <div className="text-center">
+        <h1 className="text-3xl font-bold text-blue-600 mb-4">Staff Portal</h1>
+        <p className="text-gray-600 mb-6">Secure access for authorized hospital staff</p>
+        <StaffLogin />
+      </div>
+    </div>
+  </div>
+);
 
 // Layout Component
 const App = () => {
@@ -54,6 +70,18 @@ const App = () => {
           
           {/* Default Route - Patient Portal */}
           <Route path="/" element={<PatientPortal />} />
+          
+          {/* Patient Dashboard Routes */}
+          <Route path="/patient/dashboard/*" element={<PatientDashboard />} />
+          
+          {/* Staff Dashboard Routes */}
+          <Route path="/doctor/*" element={<DoctorDashboard />} />
+          <Route path="/receptionist/*" element={<ReceptionistDashboard />} />
+          <Route path="/pharmacist/*" element={<PharmacistDashboard />} />
+          <Route path="/lab/*" element={<LabDashboard />} />
+          <Route path="/admin/*" element={<AdminDashboard />} />
+          <Route path="/admission/*" element={<AdmissionDashboard />} />
+          <Route path="/nurse/*" element={<NurseDashboard />} />
           
           {/* Legacy Routes for backward compatibility */}
           <Route path="/services" element={
