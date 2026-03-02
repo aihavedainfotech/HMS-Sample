@@ -352,6 +352,43 @@ def doctor_dashboard():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/doctor/stats', methods=['GET'])
+@jwt_required()
+def doctor_stats():
+    """Doctor stats endpoint"""
+    try:
+        current_user = get_jwt_identity()
+        if current_user.get('role') != 'Doctor':
+            return jsonify({'error': 'Unauthorized'}), 403
+        
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        # Get doctor's stats
+        cur.execute("""
+            SELECT COUNT(*) FROM appointments 
+            WHERE doctor_id = %s AND appointment_date = CURRENT_DATE
+        """, (current_user['staff_id'],))
+        today_appointments = cur.fetchone()[0]
+        
+        cur.execute("""
+            SELECT COUNT(*) FROM appointments 
+            WHERE doctor_id = %s AND status = 'Pending'
+        """, (current_user['staff_id'],))
+        pending_appointments = cur.fetchone()[0]
+        
+        cur.close()
+        conn.close()
+        
+        return jsonify({
+            'today_appointments': today_appointments,
+            'pending_appointments': pending_appointments,
+            'total_patients': 0,
+            'user': current_user
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/receptionist/dashboard', methods=['GET'])
 @jwt_required()
 def receptionist_dashboard():
