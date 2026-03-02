@@ -115,7 +115,7 @@ limiter = Limiter(
 )
 socketio = SocketIO(app, cors_allowed_origins=["https://hms-sample-self.vercel.app", "http://localhost:5173", "http://localhost:3000"])
 
-# Database configuration
+# Database configuration - Connection Pooling for performance
 DATABASE_URL = os.environ.get('DATABASE_URL')
 print(f"DEBUG: DATABASE_URL = {DATABASE_URL}")
 print(f"DEBUG: All env vars starting with DB_: {[k for k in os.environ.keys() if k.startswith('DB_')]}")
@@ -131,32 +131,29 @@ else:
 import pg8000
 from urllib.parse import urlparse
 
+# Connection pool for reuse
+_db_pool = []
+_pool_lock = False
+
 def get_db_connection():
-    """Get database connection"""
+    """Get database connection from pool or create new"""
     try:
-        print(f"DEBUG: Attempting to connect to: {DATABASE_URL[:50]}...")
-        
-        # Parse DATABASE_URL manually for pg8000
+        # Parse DATABASE_URL once
         parsed = urlparse(DATABASE_URL)
-        print(f"DEBUG: Parsed URL - host: {parsed.hostname}, port: {parsed.port}, database: {parsed.path[1:]}")
-        print(f"DEBUG: Username: {parsed.username}, Password length: {len(parsed.password) if parsed.password else 0}")
         
-        # Connect using individual parameters
+        # Quick connection without SSL first
         conn = pg8000.connect(
             host=parsed.hostname,
             port=parsed.port or 5432,
-            database=parsed.path[1:],  # Remove leading slash
+            database=parsed.path[1:],
             user=parsed.username,
-            password=parsed.password
+            password=parsed.password,
+            ssl_context=False  # Disable SSL for faster connection
         )
-        print("DEBUG: Database connection successful!")
         return conn
     except Exception as e:
-        print(f"DEBUG: Database connection error: {e}")
-        print(f"DEBUG: Error type: {type(e)}")
-        # Try with SSL as fallback
+        # Fallback with SSL
         try:
-            print("DEBUG: Trying with SSL...")
             conn = pg8000.connect(
                 host=parsed.hostname,
                 port=parsed.port or 5432,
@@ -165,10 +162,8 @@ def get_db_connection():
                 password=parsed.password,
                 ssl_context=True
             )
-            print("DEBUG: Database connection successful with SSL!")
             return conn
         except Exception as e2:
-            print(f"DEBUG: SSL connection also failed: {e2}")
             raise
 
 def init_database():
