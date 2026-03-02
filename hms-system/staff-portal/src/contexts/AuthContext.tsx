@@ -74,12 +74,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const userData: AuthUser = {
-        staff_id: data.staff_id,
-        name: data.name,
-        role: data.role,
-        department: data.department,
-        sub_department: data.sub_department,
-        email: data.email,
+        staff_id: data.staff.staff_id,
+        name: data.staff.name,
+        role: data.staff.role,
+        department: data.staff.department_id,
+        sub_department: data.staff.sub_department,
+        email: data.staff.email,
       };
 
       localStorage.setItem('hms_staff_token', data.access_token);
