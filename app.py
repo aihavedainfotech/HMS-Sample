@@ -78,6 +78,7 @@ def get_db_connection():
         # Parse DATABASE_URL manually for pg8000
         parsed = urlparse(DATABASE_URL)
         print(f"DEBUG: Parsed URL - host: {parsed.hostname}, port: {parsed.port}, database: {parsed.path[1:]}")
+        print(f"DEBUG: Username: {parsed.username}, Password length: {len(parsed.password) if parsed.password else 0}")
         
         # Connect using individual parameters
         conn = pg8000.connect(
@@ -85,15 +86,29 @@ def get_db_connection():
             port=parsed.port or 5432,
             database=parsed.path[1:],  # Remove leading slash
             user=parsed.username,
-            password=parsed.password,
-            ssl_context=True
+            password=parsed.password
         )
         print("DEBUG: Database connection successful!")
         return conn
     except Exception as e:
         print(f"DEBUG: Database connection error: {e}")
         print(f"DEBUG: Error type: {type(e)}")
-        raise
+        # Try with SSL as fallback
+        try:
+            print("DEBUG: Trying with SSL...")
+            conn = pg8000.connect(
+                host=parsed.hostname,
+                port=parsed.port or 5432,
+                database=parsed.path[1:],
+                user=parsed.username,
+                password=parsed.password,
+                ssl_context=True
+            )
+            print("DEBUG: Database connection successful with SSL!")
+            return conn
+        except Exception as e2:
+            print(f"DEBUG: SSL connection also failed: {e2}")
+            raise
 
 def init_database():
     """Initialize database tables"""
