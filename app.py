@@ -61,7 +61,6 @@ if not DATABASE_URL:
 
 # Import database utilities
 import pg8000
-from pg8000 import sql
 
 def get_db_connection():
     """Get database connection"""
