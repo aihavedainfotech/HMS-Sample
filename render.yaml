@@ -8,6 +8,7 @@ services:
     startCommand: gunicorn app:app --workers 1 --bind 0.0.0.0:$PORT
     pythonVersion: 3.11.10
     envVars:
+      # Python Configuration
       - key: PYTHON_VERSION
         value: 3.11.10
       - key: FLASK_ENV
@@ -16,3 +17,27 @@ services:
         value: 0
       - key: PYTHONUNBUFFERED
         value: 1
+      
+      # Database Configuration (SET THESE IN RENDER DASHBOARD)
+      - key: DATABASE_URL
+        value: "postgresql://neondb_owner:npg_4tnCOqT6eLwy@ep-small-math-aisod172-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+        sync: false
+      
+      # Flask Configuration
+      - key: SECRET_KEY
+        value: "hms-production-secret-key-change-this"
+        sync: false
+      - key: JWT_SECRET_KEY
+        value: "hms-jwt-production-secret-change-this"
+        sync: false
+      
+      # WhatsApp Configuration (Optional - SET IN RENDER DASHBOARD)
+      - key: WHATSAPP_API_URL
+        value: "https://graph.facebook.com/v22.0"
+        sync: false
+      - key: WHATSAPP_PHONE_NUMBER_ID
+        value: "1033955206448310"
+        sync: false
+      - key: WHATSAPP_ACCESS_TOKEN
+        value: "EAAUYA9KmT6gBQzfRjZBSSKW0upk3dorlWZB72ETCpzKCdwMme0Y22Mu3938MgPPcyoygc9RfW4UCtZA2Q96MdDOO48ytLEeWHHEWAtP7VdtduN2cGLtrB3j07FLmsZA6MjuZCjQoUTFo0ZCshZAF1QBkyU7WGY8y5KN77sVAlVbA0DCft7qHtWMBPdyrEXAXfEK83gxNJvcxOilc7KMUY9gQwA0tKMnJwJX8rtNbXpKoAzX5p9GiSiFY8c9MRTDS1qpUGhdpmxMCERebY42wd5LYGrn"
+        sync: false
