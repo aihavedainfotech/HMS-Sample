@@ -56,6 +56,54 @@ CORS(app, resources={
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
         "supports_credentials": True
+    },
+    r"/admin/*": {
+        "origins": ["https://hms-sample-self.vercel.app", "http://localhost:5173", "http://localhost:3000"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    },
+    r"/doctor/*": {
+        "origins": ["https://hms-sample-self.vercel.app", "http://localhost:5173", "http://localhost:3000"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    },
+    r"/receptionist/*": {
+        "origins": ["https://hms-sample-self.vercel.app", "http://localhost:5173", "http://localhost:3000"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    },
+    r"/pharmacist/*": {
+        "origins": ["https://hms-sample-self.vercel.app", "http://localhost:5173", "http://localhost:3000"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    },
+    r"/lab/*": {
+        "origins": ["https://hms-sample-self.vercel.app", "http://localhost:5173", "http://localhost:3000"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    },
+    r"/nurse/*": {
+        "origins": ["https://hms-sample-self.vercel.app", "http://localhost:5173", "http://localhost:3000"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    },
+    r"/billing/*": {
+        "origins": ["https://hms-sample-self.vercel.app", "http://localhost:5173", "http://localhost:3000"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    },
+    r"/admission/*": {
+        "origins": ["https://hms-sample-self.vercel.app", "http://localhost:5173", "http://localhost:3000"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
     }
 })
 jwt = JWTManager(app)
@@ -244,6 +292,118 @@ def staff_login():
     except Exception as e:
         print(f"Login error: {e}")
         return jsonify({'error': 'Login failed', 'message': str(e)}), 500
+
+# Dashboard API Endpoints
+@app.route('/admin/dashboard', methods=['GET'])
+@jwt_required()
+def admin_dashboard():
+    """Admin dashboard data"""
+    try:
+        current_user = get_jwt_identity()
+        if current_user.get('role') != 'Admin':
+            return jsonify({'error': 'Unauthorized'}), 403
+        
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        # Get stats
+        cur.execute("SELECT COUNT(*) FROM staff WHERE is_active = TRUE")
+        staff_count = cur.fetchone()[0]
+        
+        cur.execute("SELECT COUNT(*) FROM patients WHERE is_active = TRUE")
+        patient_count = cur.fetchone()[0]
+        
+        cur.execute("SELECT COUNT(*) FROM appointments WHERE status = 'Confirmed'")
+        appointment_count = cur.fetchone()[0]
+        
+        cur.close()
+        conn.close()
+        
+        return jsonify({
+            'staff_count': staff_count,
+            'patient_count': patient_count,
+            'appointment_count': appointment_count,
+            'user': current_user
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/doctor/dashboard', methods=['GET'])
+@jwt_required()
+def doctor_dashboard():
+    """Doctor dashboard data"""
+    try:
+        current_user = get_jwt_identity()
+        if current_user.get('role') != 'Doctor':
+            return jsonify({'error': 'Unauthorized'}), 403
+        
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        # Get doctor's appointments
+        cur.execute("""
+            SELECT COUNT(*) FROM appointments 
+            WHERE doctor_id = %s AND appointment_date = CURRENT_DATE
+        """, (current_user['staff_id'],))
+        today_appointments = cur.fetchone()[0]
+        
+        cur.close()
+        conn.close()
+        
+        return jsonify({
+            'today_appointments': today_appointments,
+            'user': current_user
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/receptionist/dashboard', methods=['GET'])
+@jwt_required()
+def receptionist_dashboard():
+    """Receptionist dashboard data"""
+    try:
+        current_user = get_jwt_identity()
+        if current_user.get('role') != 'Receptionist':
+            return jsonify({'error': 'Unauthorized'}), 403
+        
+        return jsonify({
+            'message': 'Receptionist dashboard',
+            'user': current_user
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/pharmacist/dashboard', methods=['GET'])
+@jwt_required()
+def pharmacist_dashboard():
+    """Pharmacist dashboard data"""
+    try:
+        current_user = get_jwt_identity()
+        if current_user.get('role') != 'Pharmacist':
+            return jsonify({'error': 'Unauthorized'}), 403
+        
+        return jsonify({
+            'message': 'Pharmacist dashboard',
+            'user': current_user
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/lab/dashboard', methods=['GET'])
+@jwt_required()
+def lab_dashboard():
+    """Lab technician dashboard data"""
+    try:
+        current_user = get_jwt_identity()
+        if current_user.get('role') != 'Lab_Technician':
+            return jsonify({'error': 'Unauthorized'}), 403
+        
+        return jsonify({
+            'message': 'Lab dashboard',
+            'user': current_user
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # Patient Authentication
 @app.route('/auth/patient/login', methods=['POST'])
