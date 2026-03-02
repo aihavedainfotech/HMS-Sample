@@ -44,7 +44,20 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=8)
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)
 
 # Initialize extensions
-CORS(app)
+CORS(app, resources={
+    r"/api/*": {
+        "origins": ["https://hms-sample-self.vercel.app", "http://localhost:5173", "http://localhost:3000"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    },
+    r"/auth/*": {
+        "origins": ["https://hms-sample-self.vercel.app", "http://localhost:5173", "http://localhost:3000"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    }
+})
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 limiter = Limiter(
@@ -168,6 +181,130 @@ def index():
         'status': 'running',
         'timestamp': datetime.now().isoformat()
     })
+
+# Staff Authentication
+@app.route('/auth/staff/login', methods=['POST'])
+def staff_login():
+    """Staff login endpoint"""
+    try:
+        data = request.get_json()
+        staff_id = data.get('staff_id')
+        password = data.get('password')
+        
+        if not staff_id or not password:
+            return jsonify({'error': 'Staff ID and password required'}), 400
+        
+        # Connect to database
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        # Query staff member
+        cur.execute("""
+            SELECT staff_id, first_name, last_name, role, department_id, 
+                   password_hash, is_active 
+            FROM staff 
+            WHERE staff_id = %s
+        """, (staff_id,))
+        
+        staff = cur.fetchone()
+        cur.close()
+        conn.close()
+        
+        if not staff:
+            return jsonify({'error': 'Invalid credentials'}), 401
+        
+        # Check if staff is active
+        if not staff[6]:  # is_active
+            return jsonify({'error': 'Account is deactivated'}), 403
+        
+        # Verify password
+        if not bcrypt.check_password_hash(staff[5], password):
+            return jsonify({'error': 'Invalid credentials'}), 401
+        
+        # Create JWT token
+        access_token = create_access_token(identity={
+            'staff_id': staff[0],
+            'name': f"{staff[1]} {staff[2]}",
+            'role': staff[3],
+            'department_id': staff[4]
+        })
+        
+        return jsonify({
+            'success': True,
+            'message': 'Login successful',
+            'access_token': access_token,
+            'staff': {
+                'staff_id': staff[0],
+                'name': f"{staff[1]} {staff[2]}",
+                'role': staff[3],
+                'department_id': staff[4]
+            }
+        })
+        
+    except Exception as e:
+        print(f"Login error: {e}")
+        return jsonify({'error': 'Login failed', 'message': str(e)}), 500
+
+# Patient Authentication
+@app.route('/auth/patient/login', methods=['POST'])
+def patient_login():
+    """Patient login endpoint"""
+    try:
+        data = request.get_json()
+        patient_id = data.get('patient_id')
+        password = data.get('password')
+        
+        if not patient_id or not password:
+            return jsonify({'error': 'Patient ID and password required'}), 400
+        
+        # Connect to database
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        # Query patient
+        cur.execute("""
+            SELECT patient_id, first_name, last_name, email, 
+                   password_hash, is_active 
+            FROM patients 
+            WHERE patient_id = %s
+        """, (patient_id,))
+        
+        patient = cur.fetchone()
+        cur.close()
+        conn.close()
+        
+        if not patient:
+            return jsonify({'error': 'Invalid credentials'}), 401
+        
+        # Check if patient is active
+        if not patient[5]:  # is_active
+            return jsonify({'error': 'Account is deactivated'}), 403
+        
+        # Verify password
+        if not bcrypt.check_password_hash(patient[4], password):
+            return jsonify({'error': 'Invalid credentials'}), 401
+        
+        # Create JWT token
+        access_token = create_access_token(identity={
+            'patient_id': patient[0],
+            'name': f"{patient[1]} {patient[2]}",
+            'email': patient[3]
+        })
+        
+        return jsonify({
+            'success': True,
+            'message': 'Login successful',
+            'access_token': access_token,
+            'patient': {
+                'patient_id': patient[0],
+                'name': f"{patient[1]} {patient[2]}",
+                'email': patient[3]
+            }
+        })
+        
+    except Exception as e:
+        print(f"Patient login error: {e}")
+        return jsonify({'error': 'Login failed', 'message': str(e)}), 500
 
 if __name__ == '__main__':
     # Run the app
