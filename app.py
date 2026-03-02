@@ -117,7 +117,7 @@ def init_database():
         cur = conn.cursor()
         
         # Create tables if they don't exist
-        with open('hms-system/database/schema.sql', 'r') as f:
+        with open('hms-system/database/neon_schema.sql', 'r') as f:
             schema_sql = f.read()
             cur.execute(schema_sql)
         
