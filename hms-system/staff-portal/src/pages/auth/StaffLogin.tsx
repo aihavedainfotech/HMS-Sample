@@ -163,14 +163,13 @@ export default function StaffLogin() {
 
                   <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-muted-foreground bg-gray-50 p-3 rounded-lg border border-gray-100">
                     <div className="space-y-1">
-                      {/* primary doctor account updated to use pass1234 */}
-                      <p><span className="font-medium text-gray-700">Doctor (test):</span> TST001 / pass1234</p>
-                      <p><span className="font-medium text-gray-700">Doctor (alt):</span> DOC002 / pass1234</p>
-                      <p><span className="font-medium text-gray-700">Reception:</span> REC001 / doctor123</p>
+                      <p><span className="font-medium text-gray-700">Doctor (test):</span> TST001 / password123</p>
+                      <p><span className="font-medium text-gray-700">Doctor (alt):</span> DOC002 / password123</p>
+                      <p><span className="font-medium text-gray-700">Reception:</span> REC001 / password123</p>
                     </div>
                     <div className="space-y-1">
-                      <p><span className="font-medium text-gray-700">Admin:</span> ADM001 / pass1234</p>
-                      <p><span className="font-medium text-gray-700">Billing:</span> BIL001 / doctor123</p>
+                      <p><span className="font-medium text-gray-700">Admin:</span> ADM001 / password123</p>
+                      <p><span className="font-medium text-gray-700">Billing:</span> BIL001 / password123</p>
                     </div>
                   </div>
               </div>
