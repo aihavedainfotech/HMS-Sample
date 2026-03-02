@@ -65,7 +65,7 @@ limiter = Limiter(
     key_func=get_remote_address,
     default_limits=["200 per day", "50 per hour"]
 )
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins=["https://hms-sample-self.vercel.app", "http://localhost:5173", "http://localhost:3000"])
 
 # Database configuration
 DATABASE_URL = os.environ.get('DATABASE_URL')
