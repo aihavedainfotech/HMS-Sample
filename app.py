@@ -115,6 +115,18 @@ limiter = Limiter(
 )
 socketio = SocketIO(app, cors_allowed_origins=["https://hms-sample-self.vercel.app", "http://localhost:5173", "http://localhost:3000"])
 
+# Global CORS handler - must run before JWT checks
+@app.before_request
+def handle_preflight():
+    """Handle CORS preflight requests globally"""
+    if request.method == "OPTIONS":
+        response = app.make_response('')
+        response.headers.add("Access-Control-Allow-Origin", "https://hms-sample-self.vercel.app")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+        response.headers.add("Access-Control-Allow-Credentials", "true")
+        return response, 200
+
 # Database configuration - Connection Pooling for performance
 DATABASE_URL = os.environ.get('DATABASE_URL')
 print(f"DEBUG: DATABASE_URL = {DATABASE_URL}")
