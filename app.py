@@ -60,13 +60,13 @@ if not DATABASE_URL:
     raise ValueError("DATABASE_URL environment variable is not set")
 
 # Import database utilities
-import psycopg2
-from psycopg2 import sql, extras
+import pg8000
+from pg8000 import sql
 
 def get_db_connection():
     """Get database connection"""
     try:
-        conn = psycopg2.connect(DATABASE_URL)
+        conn = pg8000.connect(DATABASE_URL)
         return conn
     except Exception as e:
         print(f"Database connection error: {e}")
