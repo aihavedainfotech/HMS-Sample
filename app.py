@@ -56,8 +56,15 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Database configuration
 DATABASE_URL = os.environ.get('DATABASE_URL')
+print(f"DEBUG: DATABASE_URL = {DATABASE_URL}")
+print(f"DEBUG: All env vars starting with DB_: {[k for k in os.environ.keys() if k.startswith('DB_')]}")
+print(f"DEBUG: All env vars containing DATABASE: {[k for k in os.environ.keys() if 'DATABASE' in k]}")
+
 if not DATABASE_URL:
+    print("DEBUG: DATABASE_URL is None or empty")
     raise ValueError("DATABASE_URL environment variable is not set")
+else:
+    print(f"DEBUG: DATABASE_URL found, length: {len(DATABASE_URL)}")
 
 # Import database utilities
 import pg8000
