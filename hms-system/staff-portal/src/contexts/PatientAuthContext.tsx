@@ -17,6 +17,8 @@ interface PatientAuthContextType {
   login: (token: string, patient: Patient) => void;
   logout: () => void;
   isAuthenticated: boolean;
+  /** True after we've read from localStorage (avoids redirect to login on refresh) */
+  isHydrated: boolean;
 }
 
 const PatientAuthContext = createContext<PatientAuthContextType | undefined>(undefined);
@@ -36,11 +38,11 @@ interface PatientAuthProviderProps {
 export const PatientAuthProvider: React.FC<PatientAuthProviderProps> = ({ children }) => {
   const [patient, setPatient] = useState<Patient | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('patientToken');
     const storedPatient = localStorage.getItem('patientData');
-    
     if (storedToken && storedPatient) {
       try {
         setToken(storedToken);
@@ -51,6 +53,7 @@ export const PatientAuthProvider: React.FC<PatientAuthProviderProps> = ({ childr
         localStorage.removeItem('patientData');
       }
     }
+    setIsHydrated(true);
   }, []);
 
   const login = (newToken: string, patientData: Patient) => {
@@ -73,6 +76,7 @@ export const PatientAuthProvider: React.FC<PatientAuthProviderProps> = ({ childr
     login,
     logout,
     isAuthenticated: !!token && !!patient,
+    isHydrated,
   };
 
   return (

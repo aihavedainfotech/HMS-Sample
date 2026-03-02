@@ -101,11 +101,11 @@ const HospitalNavbar = () => {
               <div className="flex items-center space-x-2 ml-6 pl-6 border-l border-gray-200">
                 <Button
                   size="sm"
-                  onClick={() => navigate('/login')}
+                  onClick={() => navigate('/patient/login')}
                   className="rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md hover:shadow-lg transition-all"
                 >
                   <User className="h-4 w-4 mr-2" />
-                  Staff Login
+                  Patient Login
                 </Button>
               </div>
             </div>
@@ -144,12 +144,12 @@ const HospitalNavbar = () => {
                   <Button
                     className="w-full justify-start rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600"
                     onClick={() => {
-                      navigate('/login');
+                      navigate('/patient/login');
                       setIsMenuOpen(false);
                     }}
                   >
                     <User className="h-4 w-4 mr-2" />
-                    Staff Login
+                    Patient Login
                   </Button>
                 </div>
               </div>

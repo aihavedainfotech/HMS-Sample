@@ -9,7 +9,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Eye, EyeOff, Hospital } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Hospital, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 
 const registerSchema = z.object({
@@ -32,19 +33,12 @@ const registerSchema = z.object({
   permanentAddressCity: z.string().optional(),
   permanentAddressState: z.string().optional(),
   permanentAddressPincode: z.string().optional(),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string().min(6, 'Confirm password is required'),
   termsAccepted: z.boolean().refine(val => val === true, 'You must accept the terms and conditions'),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
 });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 const PatientRegister = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -58,18 +52,82 @@ const PatientRegister = () => {
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema) as any,
     defaultValues: {
+      firstName: '',
+      lastName: '',
+      dateOfBirth: '',
+      gender: '',
+      bloodGroup: '',
+      mobileNumber: '',
+      email: '',
+      emergencyContactName: '',
+      emergencyContactNumber: '',
+      emergencyContactRelation: '',
+      currentAddressStreet: '',
+      currentAddressCity: '',
+      currentAddressState: '',
+      currentAddressPincode: '',
       permanentAddressSameAsCurrent: true,
+      permanentAddressStreet: '',
+      permanentAddressCity: '',
+      permanentAddressState: '',
+      permanentAddressPincode: '',
+      termsAccepted: false,
     },
   });
 
   const permanentAddressSameAsCurrent = watch('permanentAddressSameAsCurrent');
 
+  const [isOtpDialogOpen, setIsOtpDialogOpen] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [pendingRegistrationData, setPendingRegistrationData] = useState<RegisterFormData | null>(null);
+
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
     try {
+      // First step: Send OTP
+      const response = await fetch('/api/auth/patient/register/send-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mobileNumber: data.mobileNumber,
+          firstName: data.firstName
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setPendingRegistrationData(data);
+        setIsOtpDialogOpen(true);
+        toast.success(`OTP sent to ${data.mobileNumber}`);
+      } else {
+        toast.error(result.error || result.message || 'Failed to send OTP.');
+      }
+    } catch (error: any) {
+      console.error('OTP request error:', error);
+      toast.error(`Network error: ${error?.message || 'Please try again.'}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otp || otp.length < 4) {
+      toast.error('Please enter a valid OTP');
+      return;
+    }
+    if (!pendingRegistrationData) return;
+
+    setIsVerifyingOtp(true);
+    try {
+      const data = pendingRegistrationData;
       const payload = {
         ...data,
         registered_by: 'Self',
+        otp: otp
       };
 
       const response = await fetch('/api/auth/patient/register', {
@@ -83,15 +141,29 @@ const PatientRegister = () => {
       const result = await response.json();
 
       if (response.ok) {
+        setIsOtpDialogOpen(false);
         toast.success('Registration successful! Your Patient ID is: ' + result.patient_id);
-        navigate('/patient/login');
+        navigate('/patient/login', {
+          state: {
+            patientId: result.patient_id,
+            mobileNumber: data.mobileNumber
+          }
+        });
       } else {
-        toast.error(result.message || 'Registration failed');
+        const errorMessage =
+          result?.error ||
+          result?.message ||
+          (response.status === 409
+            ? 'This mobile number is already registered. Please sign in or use a different number.'
+            : 'Registration failed. Please try again.');
+
+        toast.error(errorMessage);
       }
-    } catch (error) {
-      toast.error('Network error. Please try again.');
+    } catch (error: any) {
+      console.error('Registration error details:', error, error?.message, error?.stack);
+      toast.error(`Verification error: ${error?.message || 'Please try again.'}`);
     } finally {
-      setIsLoading(false);
+      setIsVerifyingOtp(false);
     }
   };
 
@@ -397,55 +469,6 @@ const PatientRegister = () => {
                 </div>
               </div>
 
-              {/* Password */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Account Security</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password *</Label>
-                    <div className="relative">
-                      <Input
-                        id="password"
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder="Enter your password"
-                        {...register('password')}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                    {errors.password && (
-                      <p className="text-sm text-red-600">{errors.password.message}</p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">Confirm Password *</Label>
-                    <div className="relative">
-                      <Input
-                        id="confirmPassword"
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        placeholder="Confirm your password"
-                        {...register('confirmPassword')}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                      >
-                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                    {errors.confirmPassword && (
-                      <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
               {/* Terms and Conditions */}
               <div className="space-y-2">
                 <Controller
@@ -484,6 +507,64 @@ const PatientRegister = () => {
             </form>
           </CardContent>
         </Card>
+
+        {/* OTP Verification Dialog */}
+        <Dialog open={isOtpDialogOpen} onOpenChange={setIsOtpDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <div className="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                <ShieldCheck className="w-6 h-6 text-blue-600" />
+              </div>
+              <DialogTitle className="text-center text-xl">Verify Mobile Number</DialogTitle>
+              <DialogDescription className="text-center text-gray-600">
+                Please enter the 6-digit verification code sent to
+                <br />
+                <span className="font-bold text-gray-900">{pendingRegistrationData?.mobileNumber}</span>
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="otp">Verification Code</Label>
+                <Input
+                  id="otp"
+                  maxLength={6}
+                  placeholder="Enter 6-digit code"
+                  className="text-center text-xl tracking-widest py-6"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleVerifyOtp();
+                    }
+                  }}
+                />
+              </div>
+
+              <Button
+                onClick={handleVerifyOtp}
+                className="w-full py-6 text-lg"
+                disabled={isVerifyingOtp || otp.length < 4}
+              >
+                {isVerifyingOtp ? 'Verifying...' : 'Verify & Register'}
+              </Button>
+
+              <p className="text-center text-sm text-gray-500 mt-4">
+                Didn't receive the code?{' '}
+                <button
+                  type="button"
+                  className="text-blue-600 hover:underline font-medium"
+                  onClick={() => pendingRegistrationData && onSubmit(pendingRegistrationData)}
+                  disabled={isLoading}
+                >
+                  Resend Code
+                </button>
+              </p>
+            </div>
+          </DialogContent>
+        </Dialog>
+
       </div>
     </div>
   );

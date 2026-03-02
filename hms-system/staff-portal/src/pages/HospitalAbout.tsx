@@ -7,10 +7,10 @@ import {
   Building,
   Target,
   Lightbulb,
+  Clock,
   MapPin,
   Phone,
   Mail,
-  Clock,
   CheckCircle2
 } from 'lucide-react';
 

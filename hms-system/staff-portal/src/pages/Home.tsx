@@ -21,6 +21,7 @@ import {
   Clock,
   Award,
   ThumbsUp,
+  Calendar,
   Phone,
   ArrowRight,
   Star,
@@ -138,71 +139,83 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center pt-32 pb-16 overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-blue-50" />
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=1920&h=1080&fit=crop')] bg-cover bg-center opacity-5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-secondary/20" />
+        <div className="absolute inset-0 bg-primary/5 opacity-5" />
+
+        {/* Decorative Elements */}
+        <div className="absolute top-20 right-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-secondary/20 rounded-full blur-3xl" />
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Content */}
             <div className={`space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-              <Badge className="px-4 py-1.5 text-sm bg-blue-100 text-blue-700 border-blue-200">
+              <Badge className="px-4 py-1.5 text-sm bg-primary/10 text-primary border-primary/20">
                 <Award className="h-4 w-4 mr-2" />
-                Waitz Hospital System
+                NABH Accredited Hospital
               </Badge>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-slate-900">
-                Welcome to the <br />
-                <span className="text-blue-600">Staff Portal</span>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                Your Health is Our{' '}
+                <span className="text-primary">Top Priority</span>
               </h1>
 
-              <p className="text-lg text-slate-600 max-w-xl">
-                Secure access for authorized personnel. Manage patient records, appointments, and hospital operations efficiently.
+              <p className="text-lg text-muted-foreground max-w-xl">
+                Experience world-class healthcare with cutting-edge technology and
+                compassionate medical professionals dedicated to your well-being.
               </p>
 
-              <div className="flex flex-wrap gap-4 pt-4">
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700" asChild>
-                  <Link to="/login">
-                    <User className="h-5 w-5 mr-2" />
-                    Staff Login
+              <div className="flex flex-wrap gap-4">
+                <Button size="lg" asChild>
+                  <Link to="/register">
+                    <Calendar className="h-5 w-5 mr-2" />
+                    Book Appointment
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
-                  <Link to="/about">
+                  <Link to="/doctors">
                     <Users className="h-5 w-5 mr-2" />
-                    About Hospital
+                    Find a Doctor
                   </Link>
                 </Button>
               </div>
 
               {/* Quick Info */}
-              <div className="flex flex-wrap gap-6 pt-8 border-t border-slate-200 mt-8">
+              <div className="flex flex-wrap gap-6 pt-4">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-5 w-5 text-green-500" />
-                  <span className="text-sm font-medium text-slate-700">Secure Access</span>
+                  <span className="text-sm">24/7 Emergency</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-5 w-5 text-green-500" />
-                  <span className="text-sm font-medium text-slate-700">24/7 Support</span>
+                  <span className="text-sm">Expert Doctors</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-5 w-5 text-green-500" />
-                  <span className="text-sm font-medium text-slate-700">HIPAA Compliant</span>
+                  <span className="text-sm">Advanced Technology</span>
                 </div>
               </div>
             </div>
 
             {/* Hero Image */}
             <div className={`relative transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <img
                   src="https://images.unsplash.com/photo-1551076805-e1869033e561?w=800&h=600&fit=crop"
-                  alt="Staff Portal Interface"
+                  alt="Healthcare Team"
                   className="w-full h-auto object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                <div className="absolute bottom-6 left-6 text-white">
-                  <p className="font-bold text-xl">Operational Excellence</p>
-                  <p className="text-sm opacity-90">Streamlining healthcare delivery</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+              </div>
+
+              {/* Floating Card */}
+              <div className="absolute -bottom-6 -left-6 bg-white dark:bg-gray-900 rounded-xl shadow-xl p-4 flex items-center gap-3">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <ThumbsUp className="h-6 w-6 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">99%</p>
+                  <p className="text-sm text-muted-foreground">Patient Satisfaction</p>
                 </div>
               </div>
             </div>

@@ -10,11 +10,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import {
-  Eye,
-  EyeOff,
   Phone,
-  AlertCircle
+  AlertCircle,
+  ShieldCheck
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -38,21 +38,13 @@ const registrationSchema = z.object({
   permanentAddressCity: z.string().optional(),
   permanentAddressState: z.string().optional(),
   permanentAddressPincode: z.string().optional(),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string().min(6, 'Confirm password is required'),
   termsAccepted: z.boolean().refine(val => val === true, 'You must accept the terms and conditions')
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
 });
 
 type RegistrationFormData = z.infer<typeof registrationSchema>;
 
 const Register = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [step, setStep] = useState(1);
   const navigate = useNavigate();
 
   const {
@@ -64,35 +56,134 @@ const Register = () => {
   } = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema) as any,
     defaultValues: {
+      firstName: '',
+      lastName: '',
+      dateOfBirth: '',
+      gender: '',
+      bloodGroup: '',
+      mobileNumber: '',
+      email: '',
+      emergencyContactName: '',
+      emergencyContactNumber: '',
+      emergencyContactRelation: '',
+      currentAddressStreet: '',
+      currentAddressCity: '',
+      currentAddressState: '',
+      currentAddressPincode: '',
       permanentAddressSameAsCurrent: true,
+      permanentAddressStreet: '',
+      permanentAddressCity: '',
+      permanentAddressState: '',
+      permanentAddressPincode: '',
+      termsAccepted: false,
     }
   });
 
   const watchedPermanentSameAsCurrent = watch('permanentAddressSameAsCurrent');
 
+  const [isOtpDialogOpen, setIsOtpDialogOpen] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [pendingRegistrationData, setPendingRegistrationData] = useState<RegistrationFormData | null>(null);
+
   const onSubmit = async (data: RegistrationFormData) => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/auth/patient/register', {
+      // First step: Send OTP
+      const response = await fetch('/api/auth/patient/register/send-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          mobileNumber: data.mobileNumber,
+          firstName: data.firstName
+        }),
       });
 
       const result = await response.json();
 
       if (response.ok) {
-        toast.success(`Registration successful! Your Patient ID is ${result.patient_id}`);
-        navigate('/patient/login');
+        setPendingRegistrationData(data);
+        setIsOtpDialogOpen(true);
+        toast.success(`OTP sent to ${data.mobileNumber}`);
       } else {
-        toast.error(result.message || 'Registration failed');
+        toast.error(result.error || result.message || 'Failed to send OTP.');
       }
-    } catch (error) {
-      toast.error('Network error. Please try again.');
+    } catch (error: any) {
+      console.error('OTP request error:', error);
+      toast.error(`Network error: ${error?.message || 'Please try again.'}`);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (!otp || otp.length < 4) {
+      toast.error('Please enter a valid OTP');
+      return;
+    }
+    if (!pendingRegistrationData) return;
+
+    setIsVerifyingOtp(true);
+    try {
+      const data = pendingRegistrationData;
+      const payload = {
+        first_name: data.firstName,
+        last_name: data.lastName,
+        date_of_birth: data.dateOfBirth,
+        gender: data.gender,
+        blood_group: data.bloodGroup,
+        mobile_number: data.mobileNumber,
+        email: data.email,
+        emergency_contact_name: data.emergencyContactName,
+        emergency_contact_number: data.emergencyContactNumber,
+        emergency_contact_relation: data.emergencyContactRelation,
+        current_address_street: data.currentAddressStreet,
+        current_city: data.currentAddressCity,
+        current_state: data.currentAddressState,
+        current_pincode: data.currentAddressPincode,
+        permanent_address_same_as_current: data.permanentAddressSameAsCurrent,
+        permanent_address_street: data.permanentAddressStreet,
+        permanent_city: data.permanentAddressCity,
+        permanent_state: data.permanentAddressState,
+        permanent_pincode: data.permanentAddressPincode,
+        otp: otp
+      };
+
+      const response = await fetch('/api/auth/patient/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setIsOtpDialogOpen(false);
+        toast.success(
+          `Registration Successful! 🎉\n\nYour Patient ID: ${result.patient_id}\n\nPlease save this ID for future logins.`,
+          { duration: 8000 }
+        );
+
+        setTimeout(() => {
+          navigate('/patient/login', {
+            state: {
+              patientId: result.patient_id,
+              message: `Welcome! Please login with your Mobile Number: ${data.mobileNumber}`
+            }
+          });
+        }, 3000);
+      } else {
+        toast.error(result.error || result.message || 'Registration failed.');
+      }
+    } catch (error: any) {
+      console.error('Registration error:', error);
+      toast.error(`Verification error: ${error?.message || 'Please try again.'}`);
+    } finally {
+      setIsVerifyingOtp(false);
     }
   };
 
@@ -100,429 +191,296 @@ const Register = () => {
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4 max-w-4xl">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 animate-in fade-in zoom-in duration-500">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Patient Registration</h1>
           <p className="text-xl text-gray-600">Join CityCare Hospital for quality healthcare</p>
         </div>
 
-        {/* Progress Steps */}
-        <div className="flex justify-center mb-8">
-          <div className="flex items-center space-x-4">
-            {[1, 2, 3].map((stepNumber) => (
-              <div key={stepNumber} className="flex items-center">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${step >= stepNumber
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-600'
-                  }`}>
-                  {stepNumber}
-                </div>
-                {stepNumber < 3 && (
-                  <div className={`w-16 h-1 ${step > stepNumber ? 'bg-blue-600' : 'bg-gray-200'
-                    }`} />
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Card>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 animate-in slide-in-from-bottom-4 duration-700">
+          <Card className="shadow-lg border-0">
             <CardContent className="p-8">
-              {step === 1 && (
-                <div className="space-y-6">
-                  <div>
-                    <h2 className="text-2xl font-semibold mb-6">Personal Information</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="firstName">First Name *</Label>
-                        <Input
-                          id="firstName"
-                          {...register('firstName')}
-                          placeholder="Enter your first name"
-                        />
-                        {errors.firstName && (
-                          <p className="text-sm text-red-600">{errors.firstName.message}</p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="lastName">Last Name *</Label>
-                        <Input
-                          id="lastName"
-                          {...register('lastName')}
-                          placeholder="Enter your last name"
-                        />
-                        {errors.lastName && (
-                          <p className="text-sm text-red-600">{errors.lastName.message}</p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="dateOfBirth">Date of Birth *</Label>
-                        <Input
-                          id="dateOfBirth"
-                          type="date"
-                          {...register('dateOfBirth')}
-                          max={new Date().toISOString().split('T')[0]}
-                        />
-                        {errors.dateOfBirth && (
-                          <p className="text-sm text-red-600">{errors.dateOfBirth.message}</p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="gender">Gender *</Label>
-                        <Controller
-                          name="gender"
-                          control={control}
-                          render={({ field }) => (
-                            <Select onValueChange={field.onChange} value={field.value}>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select gender" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="Male">Male</SelectItem>
-                                <SelectItem value="Female">Female</SelectItem>
-                                <SelectItem value="Other">Other</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          )}
-                        />
-                        {errors.gender && (
-                          <p className="text-sm text-red-600">{errors.gender.message}</p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="bloodGroup">Blood Group</Label>
-                        <Controller
-                          name="bloodGroup"
-                          control={control}
-                          render={({ field }) => (
-                            <Select onValueChange={field.onChange} value={field.value}>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select blood group" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="A+">A+</SelectItem>
-                                <SelectItem value="A-">A-</SelectItem>
-                                <SelectItem value="B+">B+</SelectItem>
-                                <SelectItem value="B-">B-</SelectItem>
-                                <SelectItem value="O+">O+</SelectItem>
-                                <SelectItem value="O-">O-</SelectItem>
-                                <SelectItem value="AB+">AB+</SelectItem>
-                                <SelectItem value="AB-">AB-</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          )}
-                        />
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="flex justify-end">
-                    <Button
-                      type="button"
-                      onClick={() => setStep(2)}
-                      className="px-8"
-                    >
-                      Next Step
-                    </Button>
+              {/* Section 1: Personal Information */}
+              <div className="space-y-6">
+                <h2 className="text-2xl font-semibold border-b pb-2 text-gray-800">Personal Information</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName">First Name *</Label>
+                    <Input id="firstName" {...register('firstName')} placeholder="Enter your first name" className="bg-gray-50 focus:bg-white" />
+                    {errors.firstName && <p className="text-sm text-red-600">{errors.firstName.message}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="lastName">Last Name *</Label>
+                    <Input id="lastName" {...register('lastName')} placeholder="Enter your last name" className="bg-gray-50 focus:bg-white" />
+                    {errors.lastName && <p className="text-sm text-red-600">{errors.lastName.message}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="dateOfBirth">Date of Birth *</Label>
+                    <Input id="dateOfBirth" type="date" {...register('dateOfBirth')} max={new Date().toISOString().split('T')[0]} className="bg-gray-50 focus:bg-white" />
+                    {errors.dateOfBirth && <p className="text-sm text-red-600">{errors.dateOfBirth.message}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="gender">Gender *</Label>
+                    <Controller
+                      name="gender"
+                      control={control}
+                      render={({ field }) => (
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <SelectTrigger className="bg-gray-50 focus:bg-white">
+                            <SelectValue placeholder="Select gender" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Male">Male</SelectItem>
+                            <SelectItem value="Female">Female</SelectItem>
+                            <SelectItem value="Other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    {errors.gender && <p className="text-sm text-red-600">{errors.gender.message}</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="bloodGroup">Blood Group</Label>
+                    <Controller
+                      name="bloodGroup"
+                      control={control}
+                      render={({ field }) => (
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <SelectTrigger className="bg-gray-50 focus:bg-white">
+                            <SelectValue placeholder="Select blood group" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="A+">A+</SelectItem>
+                            <SelectItem value="A-">A-</SelectItem>
+                            <SelectItem value="B+">B+</SelectItem>
+                            <SelectItem value="B-">B-</SelectItem>
+                            <SelectItem value="O+">O+</SelectItem>
+                            <SelectItem value="O-">O-</SelectItem>
+                            <SelectItem value="AB+">AB+</SelectItem>
+                            <SelectItem value="AB-">AB-</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
                   </div>
                 </div>
-              )}
+              </div>
 
-              {step === 2 && (
-                <div className="space-y-6">
-                  <div>
-                    <h2 className="text-2xl font-semibold mb-6">Contact Information</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="mobileNumber">Mobile Number *</Label>
-                        <Input
-                          id="mobileNumber"
-                          type="tel"
-                          {...register('mobileNumber')}
-                          placeholder="Enter 10-digit mobile number"
-                        />
-                        {errors.mobileNumber && (
-                          <p className="text-sm text-red-600">{errors.mobileNumber.message}</p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email Address</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          {...register('email')}
-                          placeholder="Enter your email address"
-                        />
-                        {errors.email && (
-                          <p className="text-sm text-red-600">{errors.email.message}</p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="emergencyContactName">Emergency Contact Name *</Label>
-                        <Input
-                          id="emergencyContactName"
-                          {...register('emergencyContactName')}
-                          placeholder="Emergency contact person name"
-                        />
-                        {errors.emergencyContactName && (
-                          <p className="text-sm text-red-600">{errors.emergencyContactName.message}</p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="emergencyContactNumber">Emergency Contact Number *</Label>
-                        <Input
-                          id="emergencyContactNumber"
-                          type="tel"
-                          {...register('emergencyContactNumber')}
-                          placeholder="Emergency contact number"
-                        />
-                        {errors.emergencyContactNumber && (
-                          <p className="text-sm text-red-600">{errors.emergencyContactNumber.message}</p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="emergencyContactRelation">Relationship *</Label>
-                        <Input
-                          id="emergencyContactRelation"
-                          {...register('emergencyContactRelation')}
-                          placeholder="e.g., Spouse, Parent, Sibling"
-                        />
-                        {errors.emergencyContactRelation && (
-                          <p className="text-sm text-red-600">{errors.emergencyContactRelation.message}</p>
-                        )}
-                      </div>
-                    </div>
+              {/* Section 2: Contact Information */}
+              <div className="space-y-6 mt-10">
+                <h2 className="text-2xl font-semibold border-b pb-2 text-gray-800">Contact Information</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="mobileNumber">Mobile Number *</Label>
+                    <Input id="mobileNumber" type="tel" {...register('mobileNumber')} placeholder="Enter 10-digit mobile number" className="bg-gray-50 focus:bg-white" />
+                    {errors.mobileNumber && <p className="text-sm text-red-600">{errors.mobileNumber.message}</p>}
                   </div>
-
-                  <div className="flex justify-between">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setStep(1)}
-                    >
-                      Previous
-                    </Button>
-                    <Button
-                      type="button"
-                      onClick={() => setStep(3)}
-                      className="px-8"
-                    >
-                      Next Step
-                    </Button>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input id="email" type="email" {...register('email')} placeholder="Enter your email address" className="bg-gray-50 focus:bg-white" />
+                    {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
+                  </div>
+                  <div className="space-y-2 md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="emergencyContactName">Emergency Contact Name *</Label>
+                      <Input id="emergencyContactName" {...register('emergencyContactName')} placeholder="Emergency contact person name" className="bg-gray-50 focus:bg-white" />
+                      {errors.emergencyContactName && <p className="text-sm text-red-600">{errors.emergencyContactName.message}</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="emergencyContactNumber">Emergency Contact Number *</Label>
+                      <Input id="emergencyContactNumber" type="tel" {...register('emergencyContactNumber')} placeholder="Emergency contact number" className="bg-gray-50 focus:bg-white" />
+                      {errors.emergencyContactNumber && <p className="text-sm text-red-600">{errors.emergencyContactNumber.message}</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="emergencyContactRelation">Relationship *</Label>
+                      <Input id="emergencyContactRelation" {...register('emergencyContactRelation')} placeholder="e.g., Spouse, Parent, Sibling" className="bg-gray-50 focus:bg-white" />
+                      {errors.emergencyContactRelation && <p className="text-sm text-red-600">{errors.emergencyContactRelation.message}</p>}
+                    </div>
                   </div>
                 </div>
-              )}
+              </div>
 
-              {step === 3 && (
-                <div className="space-y-6">
-                  <div>
-                    <h2 className="text-2xl font-semibold mb-6">Address & Password</h2>
+              {/* Section 3: Address Information */}
+              <div className="space-y-6 mt-10">
+                <h2 className="text-2xl font-semibold border-b pb-2 text-gray-800">Address Information</h2>
 
-                    {/* Permanent Address Same as Current */}
-                    <div className="flex items-center space-x-2 mb-6">
-                      <Checkbox
-                        id="permanentAddressSameAsCurrent"
-                        {...register('permanentAddressSameAsCurrent')}
-                      />
-                      <Label htmlFor="permanentAddressSameAsCurrent">
-                        Permanent address same as current address
-                      </Label>
-                    </div>
+                <div className="flex items-center space-x-2 mb-4 bg-blue-50 p-4 rounded-md border border-blue-100">
+                  <Checkbox id="permanentAddressSameAsCurrent" {...register('permanentAddressSameAsCurrent')} />
+                  <Label htmlFor="permanentAddressSameAsCurrent" className="font-medium text-blue-900 cursor-pointer">
+                    Permanent address is the same as current address
+                  </Label>
+                </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                  {/* Current Address */}
+                  <div className="space-y-4">
+                    <h3 className="font-medium text-gray-700">Current Address</h3>
+                    <div className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="currentAddressStreet">Current Address Street *</Label>
-                        <Textarea
-                          id="currentAddressStreet"
-                          {...register('currentAddressStreet')}
-                          placeholder="Enter your current street address"
-                          rows={2}
-                        />
-                        {errors.currentAddressStreet && (
-                          <p className="text-sm text-red-600">{errors.currentAddressStreet.message}</p>
-                        )}
+                        <Label htmlFor="currentAddressStreet">Street Address *</Label>
+                        <Textarea id="currentAddressStreet" {...register('currentAddressStreet')} placeholder="Enter your current street address" rows={2} className="bg-gray-50 focus:bg-white resize-none" />
+                        {errors.currentAddressStreet && <p className="text-sm text-red-600">{errors.currentAddressStreet.message}</p>}
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="currentAddressCity">City *</Label>
-                        <Input
-                          id="currentAddressCity"
-                          {...register('currentAddressCity')}
-                          placeholder="Enter your city"
-                        />
-                        {errors.currentAddressCity && (
-                          <p className="text-sm text-red-600">{errors.currentAddressCity.message}</p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="currentAddressState">State *</Label>
-                        <Input
-                          id="currentAddressState"
-                          {...register('currentAddressState')}
-                          placeholder="Enter your state"
-                        />
-                        {errors.currentAddressState && (
-                          <p className="text-sm text-red-600">{errors.currentAddressState.message}</p>
-                        )}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="currentAddressCity">City *</Label>
+                          <Input id="currentAddressCity" {...register('currentAddressCity')} placeholder="Enter city" className="bg-gray-50 focus:bg-white" />
+                          {errors.currentAddressCity && <p className="text-sm text-red-600">{errors.currentAddressCity.message}</p>}
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="currentAddressState">State *</Label>
+                          <Input id="currentAddressState" {...register('currentAddressState')} placeholder="Enter state" className="bg-gray-50 focus:bg-white" />
+                          {errors.currentAddressState && <p className="text-sm text-red-600">{errors.currentAddressState.message}</p>}
+                        </div>
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="currentAddressPincode">Pincode *</Label>
-                        <Input
-                          id="currentAddressPincode"
-                          {...register('currentAddressPincode')}
-                          placeholder="Enter 6-digit pincode"
-                        />
-                        {errors.currentAddressPincode && (
-                          <p className="text-sm text-red-600">{errors.currentAddressPincode.message}</p>
-                        )}
-                      </div>
-
-                      {!watchedPermanentSameAsCurrent && (
-                        <>
-                          <div className="space-y-2">
-                            <Label htmlFor="permanentAddressStreet">Permanent Address Street</Label>
-                            <Textarea
-                              id="permanentAddressStreet"
-                              {...register('permanentAddressStreet')}
-                              placeholder="Enter your permanent street address"
-                              rows={2}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="permanentAddressCity">Permanent City</Label>
-                            <Input
-                              id="permanentAddressCity"
-                              {...register('permanentAddressCity')}
-                              placeholder="Enter your permanent city"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="permanentAddressState">Permanent State</Label>
-                            <Input
-                              id="permanentAddressState"
-                              {...register('permanentAddressState')}
-                              placeholder="Enter your permanent state"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="permanentAddressPincode">Permanent Pincode</Label>
-                            <Input
-                              id="permanentAddressPincode"
-                              {...register('permanentAddressPincode')}
-                              placeholder="Enter 6-digit pincode"
-                            />
-                          </div>
-                        </>
-                      )}
-
-                      <div className="space-y-2">
-                        <Label htmlFor="password">Password *</Label>
-                        <div className="relative">
-                          <Input
-                            id="password"
-                            type={showPassword ? 'text' : 'password'}
-                            {...register('password')}
-                            placeholder="Create a strong password"
-                          />
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="absolute right-0 top-0 h-full px-3"
-                            onClick={() => setShowPassword(!showPassword)}
-                          >
-                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                          </Button>
-                        </div>
-                        {errors.password && (
-                          <p className="text-sm text-red-600">{errors.password.message}</p>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="confirmPassword">Confirm Password *</Label>
-                        <div className="relative">
-                          <Input
-                            id="confirmPassword"
-                            type={showConfirmPassword ? 'text' : 'password'}
-                            {...register('confirmPassword')}
-                            placeholder="Confirm your password"
-                          />
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="absolute right-0 top-0 h-full px-3"
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          >
-                            {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                          </Button>
-                        </div>
-                        {errors.confirmPassword && (
-                          <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>
-                        )}
+                        <Input id="currentAddressPincode" {...register('currentAddressPincode')} placeholder="Enter 6-digit pincode" className="bg-gray-50 focus:bg-white" />
+                        {errors.currentAddressPincode && <p className="text-sm text-red-600">{errors.currentAddressPincode.message}</p>}
                       </div>
                     </div>
                   </div>
 
-                  {/* Terms and Conditions */}
-                  <div className="space-y-2">
-                    <div className="flex items-start space-x-2">
-                      <Checkbox
-                        id="termsAccepted"
-                        {...register('termsAccepted')}
-                      />
-                      <Label htmlFor="termsAccepted" className="text-sm">
-                        I accept the terms and conditions and privacy policy of CityCare Hospital
-                      </Label>
+                  {/* Permanent Address */}
+                  {!watchedPermanentSameAsCurrent && (
+                    <div className="space-y-4 animate-in fade-in duration-300">
+                      <h3 className="font-medium text-gray-700">Permanent Address</h3>
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="permanentAddressStreet">Street Address</Label>
+                          <Textarea id="permanentAddressStreet" {...register('permanentAddressStreet')} placeholder="Enter your permanent street address" rows={2} className="bg-gray-50 focus:bg-white resize-none" />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="permanentAddressCity">City</Label>
+                            <Input id="permanentAddressCity" {...register('permanentAddressCity')} placeholder="Enter city" className="bg-gray-50 focus:bg-white" />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="permanentAddressState">State</Label>
+                            <Input id="permanentAddressState" {...register('permanentAddressState')} placeholder="Enter state" className="bg-gray-50 focus:bg-white" />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="permanentAddressPincode">Pincode</Label>
+                          <Input id="permanentAddressPincode" {...register('permanentAddressPincode')} placeholder="Enter 6-digit pincode" className="bg-gray-50 focus:bg-white" />
+                        </div>
+                      </div>
                     </div>
-                    {errors.termsAccepted && (
-                      <p className="text-sm text-red-600">{errors.termsAccepted.message}</p>
-                    )}
-                  </div>
+                  )}
 
-                  <div className="flex justify-between">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setStep(2)}
-                    >
-                      Previous
-                    </Button>
-                    <Button
-                      type="submit"
-                      disabled={isLoading}
-                      className="px-8"
-                    >
-                      {isLoading ? 'Registering...' : 'Complete Registration'}
-                    </Button>
-                  </div>
                 </div>
-              )}
+              </div>
+
+              {/* Terms and Submission */}
+              <div className="space-y-6 mt-10 pt-6 border-t">
+                <div className="space-y-2">
+                  <div className="flex items-start space-x-3">
+                    <Controller
+                      name="termsAccepted"
+                      control={control}
+                      render={({ field }) => (
+                        <Checkbox id="termsAccepted" checked={field.value} onCheckedChange={field.onChange} className="mt-1" />
+                      )}
+                    />
+                    <Label htmlFor="termsAccepted" className="text-sm text-gray-700 leading-relaxed cursor-pointer">
+                      I accept the terms and conditions and privacy policy of CityCare Hospital. I agree that the information provided is accurate and true to the best of my knowledge.
+                    </Label>
+                  </div>
+                  {errors.termsAccepted && <p className="text-sm text-red-600 ml-7">{errors.termsAccepted.message}</p>}
+                </div>
+
+                <div className="pt-4 flex justify-end">
+                  <Button type="submit" disabled={isLoading} className="w-full md:w-auto px-12 py-6 text-lg shadow-md hover:shadow-lg transition-all">
+                    {isLoading ? 'Registering...' : 'Complete Registration'}
+                  </Button>
+                </div>
+              </div>
+
             </CardContent>
           </Card>
         </form>
 
         {/* Info Section */}
-        <div className="mt-8 text-center">
-          <p className="text-gray-600 mb-4">
+        <div className="mt-8 text-center animate-in fade-in duration-1000">
+          <p className="text-gray-600 mb-6">
             Already have an account?{' '}
             <button
               onClick={() => navigate('/patient/login')}
-              className="text-blue-600 hover:underline font-medium"
+              className="text-blue-600 hover:text-blue-800 font-semibold hover:underline"
             >
               Login here
             </button>
           </p>
-          <div className="flex justify-center space-x-8 text-sm text-gray-500">
-            <div className="flex items-center space-x-2">
-              <Phone className="h-4 w-4" />
+          <div className="flex flex-col md:flex-row justify-center items-center space-y-2 md:space-y-0 md:space-x-8 text-sm text-gray-500">
+            <div className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
+              <Phone className="h-4 w-4 text-gray-400" />
               <span>Need Help? +91 22 1234 5678</span>
             </div>
-            <div className="flex items-center space-x-2">
-              <AlertCircle className="h-4 w-4" />
+            <div className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
+              <AlertCircle className="h-4 w-4 text-amber-500" />
               <span>24/7 Support Available</span>
             </div>
           </div>
         </div>
+
+        {/* OTP Verification Dialog */}
+        <Dialog open={isOtpDialogOpen} onOpenChange={setIsOtpDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <div className="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                <ShieldCheck className="w-6 h-6 text-blue-600" />
+              </div>
+              <DialogTitle className="text-center text-xl">Verify Mobile Number</DialogTitle>
+              <DialogDescription className="text-center text-gray-600">
+                Please enter the 6-digit verification code sent to
+                <br />
+                <span className="font-bold text-gray-900">{pendingRegistrationData?.mobileNumber}</span>
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="otp">Verification Code</Label>
+                <Input
+                  id="otp"
+                  maxLength={6}
+                  placeholder="Enter 6-digit code"
+                  className="text-center text-xl tracking-widest py-6"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleVerifyOtp();
+                    }
+                  }}
+                />
+              </div>
+
+              <Button
+                onClick={handleVerifyOtp}
+                className="w-full py-6 text-lg"
+                disabled={isVerifyingOtp || otp.length < 4}
+              >
+                {isVerifyingOtp ? 'Verifying...' : 'Verify & Register'}
+              </Button>
+
+              <p className="text-center text-sm text-gray-500 mt-4">
+                Didn't receive the code?{' '}
+                <button
+                  type="button"
+                  className="text-blue-600 hover:underline font-medium"
+                  onClick={() => pendingRegistrationData && onSubmit(pendingRegistrationData)}
+                  disabled={isLoading}
+                >
+                  Resend Code
+                </button>
+              </p>
+            </div>
+          </DialogContent>
+        </Dialog>
+
       </div>
     </div>
   );
