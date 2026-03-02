@@ -510,6 +510,241 @@ def patient_login():
         print(f"Patient login error: {e}")
         return jsonify({'error': 'Login failed', 'message': str(e)}), 500
 
+# ============================================
+# COMPREHENSIVE API ENDPOINTS FOR ALL MODULES
+# ============================================
+
+# ---------------- PATIENT MANAGEMENT APIs ----------------
+@app.route('/api/patients', methods=['GET'])
+@jwt_required()
+def get_patients():
+    """Get all patients"""
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT patient_id, first_name, last_name, date_of_birth, gender, 
+                   blood_group, mobile_number, email, is_active
+            FROM patients ORDER BY created_at DESC
+        """)
+        patients = cur.fetchall()
+        cur.close()
+        conn.close()
+        
+        return jsonify({
+            'patients': [{
+                'patient_id': p[0],
+                'first_name': p[1],
+                'last_name': p[2],
+                'date_of_birth': str(p[3]),
+                'gender': p[4],
+                'blood_group': p[5],
+                'mobile_number': p[6],
+                'email': p[7],
+                'is_active': p[8]
+            } for p in patients]
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/patients/<patient_id>', methods=['GET'])
+@jwt_required()
+def get_patient(patient_id):
+    """Get single patient details"""
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT patient_id, first_name, last_name, date_of_birth, gender,
+                   blood_group, mobile_number, email, is_active
+            FROM patients WHERE patient_id = %s
+        """, (patient_id,))
+        patient = cur.fetchone()
+        cur.close()
+        conn.close()
+        
+        if not patient:
+            return jsonify({'error': 'Patient not found'}), 404
+            
+        return jsonify({
+            'patient': {
+                'patient_id': patient[0],
+                'first_name': patient[1],
+                'last_name': patient[2],
+                'date_of_birth': str(patient[3]),
+                'gender': patient[4],
+                'blood_group': patient[5],
+                'mobile_number': patient[6],
+                'email': patient[7],
+                'is_active': patient[8]
+            }
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# ---------------- APPOINTMENT MANAGEMENT APIs ----------------
+@app.route('/api/appointments', methods=['GET'])
+@jwt_required()
+def get_appointments():
+    """Get all appointments"""
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT a.appointment_id, a.patient_id, p.first_name, p.last_name,
+                   a.doctor_id, s.first_name as doc_first, s.last_name as doc_last,
+                   a.appointment_date, a.appointment_time, a.status, a.reason
+            FROM appointments a
+            JOIN patients p ON a.patient_id = p.patient_id
+            JOIN staff s ON a.doctor_id = s.staff_id
+            ORDER BY a.appointment_date DESC, a.appointment_time DESC
+        """)
+        appointments = cur.fetchall()
+        cur.close()
+        conn.close()
+        
+        return jsonify({
+            'appointments': [{
+                'appointment_id': a[0],
+                'patient_id': a[1],
+                'patient_name': f"{a[2]} {a[3]}",
+                'doctor_id': a[4],
+                'doctor_name': f"{a[5]} {a[6]}",
+                'appointment_date': str(a[7]),
+                'appointment_time': str(a[8]),
+                'status': a[9],
+                'reason': a[10]
+            } for a in appointments]
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# ---------------- DOCTOR APIs ----------------
+@app.route('/api/doctor/appointments/today', methods=['GET'])
+@jwt_required()
+def get_doctor_today_appointments():
+    """Get today's appointments for logged in doctor"""
+    try:
+        current_user = get_jwt_identity()
+        if current_user.get('role') != 'Doctor':
+            return jsonify({'error': 'Unauthorized'}), 403
+            
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT a.appointment_id, a.patient_id, p.first_name, p.last_name,
+                   a.appointment_time, a.status, a.reason
+            FROM appointments a
+            JOIN patients p ON a.patient_id = p.patient_id
+            WHERE a.doctor_id = %s AND a.appointment_date = CURRENT_DATE
+            ORDER BY a.appointment_time
+        """, (current_user['staff_id'],))
+        appointments = cur.fetchall()
+        cur.close()
+        conn.close()
+        
+        return jsonify({
+            'appointments': [{
+                'appointment_id': a[0],
+                'patient_id': a[1],
+                'patient_name': f"{a[2]} {a[3]}",
+                'appointment_time': str(a[4]),
+                'status': a[5],
+                'reason': a[6]
+            } for a in appointments]
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# ---------------- ADMIN APIs ----------------
+@app.route('/api/staff', methods=['GET'])
+@jwt_required()
+def get_all_staff():
+    """Get all staff members"""
+    try:
+        current_user = get_jwt_identity()
+        if current_user.get('role') != 'Admin':
+            return jsonify({'error': 'Unauthorized'}), 403
+            
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT staff_id, first_name, last_name, email, phone, role, is_active
+            FROM staff ORDER BY created_at DESC
+        """)
+        staff = cur.fetchall()
+        cur.close()
+        conn.close()
+        
+        return jsonify({
+            'staff': [{
+                'staff_id': s[0],
+                'name': f"{s[1]} {s[2]}",
+                'email': s[3],
+                'phone': s[4],
+                'role': s[5],
+                'is_active': s[6]
+            } for s in staff]
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# ---------------- STATS API ----------------
+@app.route('/api/stats', methods=['GET'])
+@jwt_required()
+def get_hospital_stats():
+    """Get overall hospital statistics"""
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        
+        cur.execute("SELECT COUNT(*) FROM patients WHERE is_active = TRUE")
+        total_patients = cur.fetchone()[0]
+        
+        cur.execute("SELECT COUNT(*) FROM staff WHERE is_active = TRUE")
+        total_staff = cur.fetchone()[0]
+        
+        cur.execute("SELECT COUNT(*) FROM appointments WHERE appointment_date = CURRENT_DATE")
+        today_appointments = cur.fetchone()[0]
+        
+        cur.execute("SELECT COUNT(*) FROM appointments WHERE status = 'Pending'")
+        pending_appointments = cur.fetchone()[0]
+        
+        cur.close()
+        conn.close()
+        
+        return jsonify({
+            'total_patients': total_patients,
+            'total_staff': total_staff,
+            'today_appointments': today_appointments,
+            'pending_appointments': pending_appointments
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# ---------------- DEPARTMENT APIs ----------------
+@app.route('/api/departments', methods=['GET'])
+@jwt_required()
+def get_departments():
+    """Get all departments"""
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT department_id, name, description FROM departments")
+        depts = cur.fetchall()
+        cur.close()
+        conn.close()
+        
+        return jsonify({
+            'departments': [{'id': d[0], 'name': d[1], 'description': d[2]} for d in depts]
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# ============================================
+# END COMPREHENSIVE APIs
+# ============================================
+
 if __name__ == '__main__':
     # Run the app
     port = int(os.environ.get('PORT', 5000))
