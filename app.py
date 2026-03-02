@@ -34,20 +34,6 @@ def graceful_shutdown(signum, frame):
 signal.signal(signal.SIGINT, graceful_shutdown)
 signal.signal(signal.SIGTERM, graceful_shutdown)
 
-# Import WhatsApp service for notifications
-from whatsapp_service import (
-    send_registration_confirmation,
-    send_appointment_booking_notification,
-    send_appointment_approval_notification,
-    send_lab_results_notification,
-    send_appointment_reminder,
-    send_appointment_cancellation_notification,
-    send_consultation_completion_notification,
-    send_prescription_ready_notification,
-    send_payment_reminder,
-    start_message_queue_worker
-)
-
 # Initialize Flask app
 app = Flask(__name__)
 
@@ -146,12 +132,6 @@ def index():
     })
 
 if __name__ == '__main__':
-    # Start message queue worker in background
-    try:
-        start_message_queue_worker()
-    except Exception as e:
-        print(f"Warning: Could not start message queue worker: {e}")
-    
     # Run the app
     port = int(os.environ.get('PORT', 5000))
     socketio.run(app, host='0.0.0.0', port=port, debug=False)
