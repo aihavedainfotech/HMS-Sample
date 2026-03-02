@@ -67,13 +67,27 @@ else:
     print(f"DEBUG: DATABASE_URL found, length: {len(DATABASE_URL)}")
 
 # Import database utilities
-import psycopg2
+import pg8000
+from urllib.parse import urlparse
 
 def get_db_connection():
     """Get database connection"""
     try:
         print(f"DEBUG: Attempting to connect to: {DATABASE_URL[:50]}...")
-        conn = psycopg2.connect(DATABASE_URL)
+        
+        # Parse DATABASE_URL manually for pg8000
+        parsed = urlparse(DATABASE_URL)
+        print(f"DEBUG: Parsed URL - host: {parsed.hostname}, port: {parsed.port}, database: {parsed.path[1:]}")
+        
+        # Connect using individual parameters
+        conn = pg8000.connect(
+            host=parsed.hostname,
+            port=parsed.port or 5432,
+            database=parsed.path[1:],  # Remove leading slash
+            user=parsed.username,
+            password=parsed.password,
+            ssl_context=True
+        )
         print("DEBUG: Database connection successful!")
         return conn
     except Exception as e:
