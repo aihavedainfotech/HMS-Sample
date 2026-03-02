@@ -19,9 +19,9 @@ export default function StaffLogin() {
     e.preventDefault();
     setLoading(true);
 
-    const success = await login(staffId.toUpperCase(), password);
-    if (success) {
-      // Redirect based on role from API response, not from form
+    const loggedInUser = await login(staffId.toUpperCase(), password);
+    if (loggedInUser) {
+      // Redirect based on role from API response
       const redirectMap: Record<string, string> = {
         Doctor: '/doctor',
         Receptionist: '/receptionist',
@@ -33,13 +33,8 @@ export default function StaffLogin() {
         Billing: '/billing',
       };
 
-      // We will rely on AuthContext correctly updating the state and getting user directly or fetching.
-      // Since `user` state from `useAuth` might not be synchronously available immediately after `login` returns,
-      // we check local storage if user is null to prevent an erroneous default route.
-      const storedUser = localStorage.getItem('hms_staff_user');
-      const latestUser = user || (storedUser ? JSON.parse(storedUser) : null);
-
-      const userRole = latestUser?.role || 'Admin';
+      const userRole = loggedInUser.role;
+      console.log('[LOGIN] Redirecting to role:', userRole, '->', redirectMap[userRole]);
       navigate(redirectMap[userRole] || '/');
     }
 

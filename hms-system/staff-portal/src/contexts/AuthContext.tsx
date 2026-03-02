@@ -15,7 +15,7 @@ interface AuthContextType {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (staffId: string, password: string, department?: string) => Promise<boolean>;
+  login: (staffId: string, password: string, department?: string) => Promise<AuthUser | null>;
   logout: () => void;
   isLoggingOut: boolean;
 }
@@ -52,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const login = async (staffId: string, password: string, department?: string): Promise<boolean> => {
+  const login = async (staffId: string, password: string, department?: string): Promise<AuthUser | null> => {
     try {
       const url = getApiUrl('/auth/staff/login');
       console.log('[AUTH] Attempting login to:', url);
@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!response.ok) {
         toast.error(data.error || 'Login failed');
         console.log('[AUTH] Login failed:', data.error);
-        return false;
+        return null;
       }
 
       const userData: AuthUser = {
@@ -86,13 +86,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('hms_staff_user', JSON.stringify(userData));
       setUser(userData);
       setIsLoggingOut(false);
-      console.log('[AUTH] Login successful for:', staffId);
+      console.log('[AUTH] Login successful for:', staffId, 'Role:', userData.role);
       toast.success('Login successful!');
-      return true;
+      return userData;
     } catch (error) {
       console.error('[AUTH] Login error:', error);
       toast.error('Network error. Please try again.');
-      return false;
+      return null;
     }
   };
 
