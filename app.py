@@ -72,10 +72,13 @@ import pg8000
 def get_db_connection():
     """Get database connection"""
     try:
+        print(f"DEBUG: Attempting to connect to: {DATABASE_URL[:50]}...")
         conn = pg8000.connect(DATABASE_URL)
+        print("DEBUG: Database connection successful!")
         return conn
     except Exception as e:
-        print(f"Database connection error: {e}")
+        print(f"DEBUG: Database connection error: {e}")
+        print(f"DEBUG: Error type: {type(e)}")
         raise
 
 def init_database():
