@@ -1,0 +1,18 @@
+services:
+  # Python Web Service
+  - type: web
+    name: hms-backend
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers 1 --bind 0.0.0.0:$PORT
+    pythonVersion: 3.11.10
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.10
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: 0
+      - key: PYTHONUNBUFFERED
+        value: 1
