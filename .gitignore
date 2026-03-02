@@ -55,3 +55,6 @@ yarn-error.log*
 
 # Deployment files that are too large
 deployment/backend/.venv/
+
+.vercel
+.env*.local
