@@ -4,7 +4,7 @@ flask-jwt-extended==4.5.3
 flask-bcrypt==1.0.1
 flask-limiter==3.5.0
 flask-socketio==5.3.6
-psycopg2-binary==2.9.9
+psycopg2-cffi==2.9.0
 python-dotenv==1.0.0
 redis==5.0.1
 requests==2.31.0
