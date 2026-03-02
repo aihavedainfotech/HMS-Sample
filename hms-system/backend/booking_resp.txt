@@ -1,6 +1,0 @@
-{
-  "appointment_id": "APTE37AC0AC",
-  "message": "Appointment created successfully",
-  "status": "Pending_Approval",
-  "token_number": "TKN-001"
-}

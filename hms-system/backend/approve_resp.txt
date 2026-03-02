@@ -1,4 +1,0 @@
-{
-  "message": "Appointment approved and added to queue",
-  "token": "TKN-002"
-}

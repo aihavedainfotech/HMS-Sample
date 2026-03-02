@@ -8,6 +8,7 @@ interface AuthUser {
   role: 'Doctor' | 'Receptionist' | 'Pharmacist' | 'Lab_Technician' | 'Nurse' | 'Admin' | 'Admission' | 'Billing';
   department?: string;
   sub_department?: string;
+  email?: string;
 }
 
 interface AuthContextType {
@@ -16,15 +17,24 @@ interface AuthContextType {
   isLoading: boolean;
   login: (staffId: string, password: string, department?: string) => Promise<boolean>;
   logout: () => void;
+  isLoggingOut: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+const getApiUrl = (path: string) => {
+  if (API_URL.startsWith('http')) {
+    return `${API_URL}${path}`;
+  }
+  return `${API_URL}${path}`;
+};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,16 +54,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (staffId: string, password: string, department?: string): Promise<boolean> => {
     try {
-      const response = await fetch(`${API_URL}/auth/staff/login`, {
+      const url = getApiUrl('/auth/staff/login');
+      console.log('[AUTH] Attempting login to:', url);
+
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ staff_id: staffId, password, department }),
       });
 
+      console.log('[AUTH] Response status:', response.status);
       const data = await response.json();
+      console.log('[AUTH] Response data:', data);
 
       if (!response.ok) {
         toast.error(data.error || 'Login failed');
+        console.log('[AUTH] Login failed:', data.error);
         return false;
       }
 
@@ -63,20 +79,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         role: data.role,
         department: data.department,
         sub_department: data.sub_department,
+        email: data.email,
       };
 
       localStorage.setItem('hms_staff_token', data.access_token);
       localStorage.setItem('hms_staff_user', JSON.stringify(userData));
       setUser(userData);
+      setIsLoggingOut(false);
+      console.log('[AUTH] Login successful for:', staffId);
       toast.success('Login successful!');
       return true;
     } catch (error) {
+      console.error('[AUTH] Login error:', error);
       toast.error('Network error. Please try again.');
       return false;
     }
   };
 
   const logout = () => {
+    setIsLoggingOut(true);
     localStorage.removeItem('hms_staff_token');
     localStorage.removeItem('hms_staff_user');
     setUser(null);
@@ -92,6 +113,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading,
         login,
         logout,
+        isLoggingOut,
       }}
     >
       {children}

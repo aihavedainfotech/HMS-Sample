@@ -17,18 +17,8 @@ class Config:
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
     
     # Database
-    DB_HOST = os.environ.get('DB_HOST', 'localhost')
-    DB_PORT = os.environ.get('DB_PORT', '5432')
-    DB_NAME = os.environ.get('DB_NAME', 'hospital_db')
-    DB_USER = os.environ.get('DB_USER', 'postgres')
-    DB_PASSWORD = os.environ.get('DB_PASSWORD', 'password')
-    
-    @property
-    def DATABASE_URI(self):
-        return f"postgresql://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
-    
-    # Redis (for rate limiting and caching)
-    REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+    DB_PATH = os.environ.get('DB_PATH', 'hospital_db.sqlite')
+    DATABASE_URL = os.environ.get('DATABASE_URL')
     
     # File Upload
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
@@ -55,7 +45,7 @@ class TestingConfig(Config):
     """Testing configuration"""
     DEBUG = True
     TESTING = True
-    DB_NAME = os.environ.get('TEST_DB_NAME', 'hospital_test_db')
+    DB_PATH = os.environ.get('TEST_DB_PATH', 'hospital_test_db.sqlite')
 
 config = {
     'development': DevelopmentConfig,

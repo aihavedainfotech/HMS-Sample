@@ -1098,6 +1098,126 @@ CREATE TRIGGER audit_admissions AFTER INSERT OR UPDATE OR DELETE ON admissions F
 CREATE TRIGGER audit_prescriptions AFTER INSERT OR UPDATE OR DELETE ON prescriptions FOR EACH ROW EXECUTE FUNCTION create_audit_log();
 CREATE TRIGGER audit_billing AFTER INSERT OR UPDATE OR DELETE ON billing FOR EACH ROW EXECUTE FUNCTION create_audit_log();
 
+-- ============================================
+-- PHARMACY SALES TABLES
+-- ============================================
+
+-- Pharmacy Sales Table
+CREATE TABLE IF NOT EXISTS pharmacy_sales (
+    id VARCHAR(20) PRIMARY KEY,
+    prescription_id VARCHAR(15) REFERENCES prescriptions(prescription_id),
+    patient_id VARCHAR(10) REFERENCES patients(patient_id),
+    patient_name VARCHAR(100) NOT NULL,
+    
+    -- Financial
+    total_amount DECIMAL(10,2) NOT NULL,
+    discount_amount DECIMAL(10,2) DEFAULT 0,
+    tax_amount DECIMAL(10,2) DEFAULT 0,
+    grand_total DECIMAL(10,2) NOT NULL,
+    
+    -- Payment
+    payment_method VARCHAR(20) NOT NULL DEFAULT 'Cash',
+    payment_status VARCHAR(20) DEFAULT 'Completed',
+    
+    -- Status
+    status VARCHAR(20) DEFAULT 'Completed' CHECK (status IN ('Pending', 'Completed', 'Cancelled')),
+    
+    -- Timestamps
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Pharmacy Sale Medicines Table
+CREATE TABLE IF NOT EXISTS pharmacy_sale_medicines (
+    id SERIAL PRIMARY KEY,
+    sale_id VARCHAR(20) REFERENCES pharmacy_sales(id) ON DELETE CASCADE,
+    medicine_name VARCHAR(100) NOT NULL,
+    quantity INTEGER NOT NULL,
+    unit_price DECIMAL(10,2) NOT NULL,
+    subtotal DECIMAL(10,2) NOT NULL,
+    
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes for pharmacy sales
+CREATE INDEX IF NOT EXISTS idx_pharmacy_sales_patient ON pharmacy_sales(patient_id);
+CREATE INDEX IF NOT EXISTS idx_pharmacy_sales_prescription ON pharmacy_sales(prescription_id);
+CREATE INDEX IF NOT EXISTS idx_pharmacy_sales_created ON pharmacy_sales(created_at);
+CREATE INDEX IF NOT EXISTS idx_pharmacy_sale_medicines_sale ON pharmacy_sale_medicines(sale_id);
+
+-- Create view for today's pharmacy sales
+CREATE OR REPLACE VIEW today_pharmacy_sales AS
+SELECT 
+    ps.*,
+    COUNT(psm.id) as medicine_count,
+    SUM(psm.subtotal) as total_medicines_value
+FROM pharmacy_sales ps
+LEFT JOIN pharmacy_sale_medicines psm ON ps.id = psm.sale_id
+WHERE DATE(ps.created_at) = CURRENT_DATE
+GROUP BY ps.id;
+
+-- Create view for pharmacy revenue
+CREATE OR REPLACE VIEW pharmacy_revenue_summary AS
+SELECT 
+    DATE(created_at) as sales_date,
+    COUNT(*) as total_transactions,
+    COUNT(*) FILTER (WHERE status = 'Completed') as completed_transactions,
+    SUM(grand_total) as total_revenue,
+    SUM(grand_total) FILTER (WHERE status = 'Completed') as completed_revenue,
+    AVG(grand_total) as average_sale_amount
+FROM pharmacy_sales
+GROUP BY DATE(created_at)
+ORDER BY sales_date DESC;
+
+-- Create view for low stock medicines
+CREATE OR REPLACE VIEW low_stock_medicines AS
+SELECT 
+    id,
+    medicine_id,
+    generic_name,
+    brand_name,
+    category,
+    current_stock,
+    reorder_level,
+    (reorder_level - current_stock) as shortage_quantity,
+    unit_price,
+    expiry_date,
+    status
+FROM medicine_inventory
+WHERE current_stock <= reorder_level AND status = 'Active'
+ORDER BY current_stock ASC;
+
+-- Create view for expiring medicines
+CREATE OR REPLACE VIEW expiring_medicines AS
+SELECT 
+    id,
+    medicine_id,
+    generic_name,
+    brand_name,
+    category,
+    current_stock,
+    unit_price,
+    expiry_date,
+    EXTRACT(DAY FROM expiry_date - CURRENT_DATE) as days_to_expiry,
+    status
+FROM medicine_inventory
+WHERE expiry_date <= CURRENT_DATE + INTERVAL '30 days' AND status = 'Active'
+ORDER BY expiry_date ASC;
+
+-- Create trigger to update pharmacy_sales timestamp
+CREATE OR REPLACE FUNCTION update_pharmacy_sales_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_pharmacy_sales_updated_at
+BEFORE UPDATE ON pharmacy_sales
+FOR EACH ROW
+EXECUTE FUNCTION update_pharmacy_sales_updated_at_column();
+
 -- Create view for today's appointments
 CREATE OR REPLACE VIEW today_appointments AS
 SELECT 

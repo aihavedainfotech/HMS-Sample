@@ -1,25 +1,42 @@
-import sqlite3
 import os
+import sqlite3
+from pathlib import Path
 
-DB_FILE = 'hospital_db.sqlite'
-SCHEMA_FILE = os.path.join(os.path.dirname(__file__), '../database/sqlite_schema.sql')
+BASE_DIR = os.path.dirname(__file__)
+SCHEMA_FILE = os.path.join(BASE_DIR, '../database/sqlite_schema.sql')
+DB_PATH = os.environ.get('DB_PATH', os.path.join(BASE_DIR, 'hospital_db.sqlite'))
+
+def dict_factory(cursor, row):
+    """Convert SQLite row to dictionary"""
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
 
 def init_db():
-    if os.path.exists(DB_FILE):
-        print(f"Removing existing database: {DB_FILE}")
-        os.remove(DB_FILE)
-
-    print(f"Creating new database: {DB_FILE}")
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-
-    with open(SCHEMA_FILE, 'r') as f:
-        schema_script = f.read()
-
+    """Initialize SQLite database with schema and seed data."""
+    print(f"Using SQLite database at: {DB_PATH}")
+    
     try:
-        cursor.executescript(schema_script)
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = dict_factory
+        conn.execute("PRAGMA foreign_keys = ON")
+        cursor = conn.cursor()
         
-        # Seed Staff Data
+        # Check if tables already exist
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='departments'")
+        if cursor.fetchone():
+            print("Database already initialized. Skipping schema creation.")
+        else:
+            # Read and execute schema
+            print("Creating database schema...")
+            with open(SCHEMA_FILE, 'r') as f:
+                schema_script = f.read()
+            
+            conn.executescript(schema_script)
+            print("Schema created successfully.")
+        
+        # Seed additional staff data
         print("Seeding staff data...")
         from flask_bcrypt import Bcrypt
         from flask import Flask
@@ -27,16 +44,10 @@ def init_db():
         bcrypt = Bcrypt(app)
         pw_hash = bcrypt.generate_password_hash('password123').decode('utf-8')
 
-        # Schema already seeds: ADM001, REC001, DOC001, PHR001
-        # We need to add: Nurse, Lab Tech, Another Doctor
-        
-        # Department IDs based on schema order:
-        # 1: Cardiology, 4: Pediatrics, 15: Pathology (Lab), 20: Nursing
-        
         additional_staff = [
-            ('DOC002', 'Susan', 'Smith', 'Doctor', 4, 'susan.smith@hospital.com', '9876543211'), # Pediatrics
-            ('NUR001', 'Nancy', 'Nurse', 'Nurse', 20, 'nancy.nurse@hospital.com', '9876543212'),
-            ('LAB001', 'Larry', 'Lab', 'Lab_Technician', 15, 'larry.lab@hospital.com', '9876543215')
+            ('DOC002', 'Susan', 'Smith', 'Doctor', 4, 'susan.smith@hospital.com', '9876543211', '2023-01-15'),
+            ('NUR001', 'Nancy', 'Nurse', 'Nurse', 20, 'nancy.nurse@hospital.com', '9876543212', '2023-02-01'),
+            ('LAB001', 'Larry', 'Lab', 'Lab_Technician', 15, 'larry.lab@hospital.com', '9876543215', '2023-03-01')
         ]
 
         print("Seeding additional staff data...")
@@ -44,29 +55,33 @@ def init_db():
             cursor.execute("SELECT 1 FROM staff WHERE staff_id = ?", (s[0],))
             if not cursor.fetchone():
                 cursor.execute("""
-                    INSERT INTO staff (staff_id, first_name, last_name, role, department_id, email, phone, password_hash)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO staff (staff_id, first_name, last_name, role, department_id, email, phone, date_of_joining, password_hash)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, s + (pw_hash,))
         
-        # Ensure all passwords (including schema-seeded ones) are set to 'password123'
-        # The schema might have a different hash or hardcoded one. Let's overwrite to be sure.
+        # Ensure all passwords are set to 'password123'
         cursor.execute("UPDATE staff SET password_hash = ?", (pw_hash,))
-        print("Updated all staff passwords to 'password123'")
-
         conn.commit()
-        print("Database initialized successfully.")
+        print("Updated all staff passwords to 'password123'")
+        
+        print("SQLite database initialized successfully.")
         
         # Verify tables
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")
         tables = cursor.fetchall()
         print("Tables created:")
         for table in tables:
-            print(f"- {table[0]}")
+            print(f"- {table['name']}")
             
     except Exception as e:
-        print(f"Error initializing database: {e}")
+        print(f"Error initializing SQLite database: {e}")
+        if 'conn' in locals():
+            conn.rollback()
     finally:
-        conn.close()
+        if 'cursor' in locals():
+            cursor.close()
+        if 'conn' in locals():
+            conn.close()
 
 if __name__ == '__main__':
     init_db()

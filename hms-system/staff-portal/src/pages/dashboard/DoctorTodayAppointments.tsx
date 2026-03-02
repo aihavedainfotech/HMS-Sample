@@ -66,7 +66,7 @@ export default function DoctorTodayAppointments() {
     };
 
     fetchQueue();
-    const interval = setInterval(fetchQueue, 5000);
+    // Polling removed in favor of socket updates
     // Join doctor-specific socket room for targeted updates
     try {
       socket.emit('join_doctor_room', { doctor_id: user.staff_id });
@@ -102,7 +102,7 @@ export default function DoctorTodayAppointments() {
     socket.on('consultation_completed', onConsultationCompleted);
 
     return () => {
-      clearInterval(interval);
+      // clearInterval(interval);
       try {
         socket.emit('leave_doctor_room', { doctor_id: user.staff_id });
       } catch (e) {

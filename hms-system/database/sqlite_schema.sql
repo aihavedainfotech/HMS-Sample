@@ -119,6 +119,16 @@ CREATE TABLE IF NOT EXISTS doctors (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Doctor Unavailability (dates when doctor is not available for bookings)
+CREATE TABLE IF NOT EXISTS doctor_unavailability (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    doctor_id TEXT NOT NULL REFERENCES staff(staff_id),
+    unavailable_date DATE NOT NULL,
+    reason TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(doctor_id, unavailable_date)
+);
+
 -- Beds Table
 CREATE TABLE IF NOT EXISTS beds (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -363,6 +373,34 @@ CREATE TABLE IF NOT EXISTS queue_management (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Pending Payments Table
+CREATE TABLE IF NOT EXISTS pending_payments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    patient_id TEXT NOT NULL REFERENCES patients(patient_id),
+    reference_type TEXT NOT NULL, -- registration | appointment | lab | pharmacy | other
+    reference_id TEXT, -- e.g., appointment_id or other ref
+    description TEXT,
+    amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    status TEXT DEFAULT 'Pending' CHECK (status IN ('Pending', 'Paid', 'Waived')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Collections Table (records of payments collected)
+CREATE TABLE IF NOT EXISTS collections (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    payment_id INTEGER REFERENCES pending_payments(id),
+    patient_id TEXT REFERENCES patients(patient_id),
+    amount DECIMAL(10,2) NOT NULL,
+    method TEXT, -- Cash, Card, UPI, Insurance
+    transaction_id TEXT,
+    collected_by TEXT REFERENCES staff(staff_id),
+    collected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    reference_type TEXT,
+    reference_id TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Bed Occupancy Summary View (SQLite doesn't support sophisticated filtered aggregates in views easily with FILTER clause in older versions, using CASE)
 DROP VIEW IF EXISTS bed_occupancy_summary;
 CREATE VIEW bed_occupancy_summary AS
@@ -405,7 +443,9 @@ INSERT OR IGNORE INTO staff (staff_id, first_name, last_name, email, phone, role
 ('ADM001', 'System', 'Administrator', 'admin@hospital.com', '555-1000', 'Admin', 17, 'System Administrator', '2020-01-01', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4.VTtYA.qGZvKG6G', 1),
 ('REC001', 'Priya', 'Sharma', 'priya.sharma@hospital.com', '555-1001', 'Receptionist', 19, 'Senior Receptionist', '2021-03-15', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4.VTtYA.qGZvKG6G', 1),
 ('DOC001', 'Dr. Rajiv', 'Menon', 'rajiv.menon@hospital.com', '555-2001', 'Doctor', 1, 'Senior Cardiologist', '2019-05-10', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4.VTtYA.qGZvKG6G', 1),
-('PHR001', 'Anil', 'Sharma', 'anil.sharma@hospital.com', '555-3001', 'Pharmacist', 16, 'Chief Pharmacist', '2018-05-15', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4.VTtYA.qGZvKG6G', 1);
+('PHR001', 'Anil', 'Sharma', 'anil.sharma@hospital.com', '555-3001', 'Pharmacist', 16, 'Chief Pharmacist', '2018-05-15', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4.VTtYA.qGZvKG6G', 1),
+('BIL001', 'Kiran', 'Shah', 'kiran.shah@hospital.com', '555-7001', 'Billing', 18, 'Billing Manager', '2018-08-12', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4.VTtYA.qGZvKG6G', 1),
+('BIL002', 'Geeta', 'Nair', 'geeta.nair@hospital.com', '555-7002', 'Billing', 18, 'Billing Executive', '2020-11-05', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4.VTtYA.qGZvKG6G', 1);
 
 -- Seed Data (Doctors)
 INSERT OR IGNORE INTO doctors (staff_id, qualifications, specialization, years_of_experience, registration_number, consultation_fee, follow_up_fee, availability_schedule, education, bio, rating) VALUES

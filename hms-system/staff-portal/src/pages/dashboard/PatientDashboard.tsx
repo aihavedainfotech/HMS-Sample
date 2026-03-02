@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,8 +18,9 @@ import {
   Loader2,
 } from 'lucide-react';
 import type { Appointment, Prescription, LabOrder } from '@/types';
+import socket from '@/lib/socket';
 
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export default function PatientDashboard() {
   const { user } = useAuth();
@@ -36,15 +37,11 @@ export default function PatientDashboard() {
     },
   });
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
-      const token = localStorage.getItem('hms_token');
-      
-      // Fetch appointments
+      const token = localStorage.getItem('hms_staff_token');
+      if (!token) return;
+
       const appointmentsRes = await fetch(`${API_URL}/appointments?status=Confirmed`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -80,7 +77,28 @@ export default function PatientDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
+
+  // Real-time: refresh when appointments or prescriptions change
+  useEffect(() => {
+    const onUpdate = () => fetchDashboardData();
+    socket.on('appointment_approved', onUpdate);
+    socket.on('new_appointment', onUpdate);
+    socket.on('queue_status_updated', onUpdate);
+    socket.on('pharmacy:prescription_received', onUpdate);
+    socket.on('lab_order_updated', onUpdate);
+    return () => {
+      socket.off('appointment_approved', onUpdate);
+      socket.off('new_appointment', onUpdate);
+      socket.off('queue_status_updated', onUpdate);
+      socket.off('pharmacy:prescription_received', onUpdate);
+      socket.off('lab_order_updated', onUpdate);
+    };
+  }, [fetchDashboardData]);
 
   if (loading) {
     return (

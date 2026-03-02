@@ -36,6 +36,7 @@ import LabDashboard from '@/layouts/LabDashboard';
 import AdminDashboard from '@/layouts/AdminDashboard';
 import AdmissionDashboard from '@/layouts/AdmissionDashboard';
 import NurseDashboard from '@/layouts/NurseDashboard';
+import BillingDashboard from '@/layouts/BillingDashboard';
 
 // Layout Component
 const App = () => {
@@ -86,6 +87,7 @@ const App = () => {
           <Route path="/admin/*" element={<AdminDashboard />} />
           <Route path="/admission/*" element={<AdmissionDashboard />} />
           <Route path="/nurse/*" element={<NurseDashboard />} />
+          <Route path="/billing/*" element={<BillingDashboard />} />
 
           {/* Default redirect */}
           <Route path="*" element={<Navigate to="/login" replace />} />

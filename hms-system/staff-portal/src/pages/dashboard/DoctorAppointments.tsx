@@ -156,8 +156,8 @@ export default function DoctorAppointments() {
     setDetailsOpen(true);
   };
 
-  const startConsultation = (patientId: string) => {
-    navigate(`/doctor/consultation?patient_id=${patientId}`);
+  const startConsultation = (patientId: string, appointmentId?: string) => {
+    navigate(`/doctor/consultation?patient_id=${patientId}${appointmentId ? `&appointment_id=${appointmentId}` : ''}`);
   };
 
   if (error) {
@@ -277,7 +277,7 @@ export default function DoctorAppointments() {
                       </Button>
                       {/* Show Start button only if waiting or confirmed or visited */}
                       {(apt.status === 'Waiting' || apt.status === 'Confirmed' || apt.status === 'Visited') && (
-                        <Button size="sm" className="ml-2 bg-blue-600 hover:bg-blue-700" onClick={() => startConsultation(apt.patient_id)}>
+                        <Button size="sm" className="ml-2 bg-blue-600 hover:bg-blue-700" onClick={() => startConsultation(apt.patient_id, apt.appointment_id)}>
                           Start
                         </Button>
                       )}
@@ -296,7 +296,7 @@ export default function DoctorAppointments() {
         appointment={selectedAppointment}
         onStartConsultation={() => {
           if (selectedAppointment) {
-            startConsultation(selectedAppointment.patient_id);
+            startConsultation(selectedAppointment.patient_id, selectedAppointment.appointment_id);
           }
         }}
       />

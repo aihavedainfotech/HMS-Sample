@@ -1,0 +1,250 @@
+INFO:whatsapp_service:✓ Message templates imported successfully
+INFO:whatsapp_service:✓ WhatsApp Templates Manager imported successfully
+INFO:whatsapp_service:WhatsApp message queue worker started
+WARNING:werkzeug:Werkzeug appears to be used in a production deployment. Consider switching to a production web server instead.
+[AI Bill] Loading dataset and initializing XGBoost model...
+[AI Bill] Model trained successfully.
+Using SQLite (single database via DB_PATH)
+Database connection successful.
+  lab_reports table ready
+  pharmacy_sales, pharmacy_sale_medicines, insurance_claims, registration_otps tables ready
+  WhatsApp message queue worker initialized
+Starting server on http://0.0.0.0:5000 (debug=False)
+ * Serving Flask app 'app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.6:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:whatsapp_service:Raw phone number input: 7036840867 -> Extracted digits: 7036840867
+INFO:whatsapp_service:10-digit number detected, assuming India (91): 917036840867
+INFO:whatsapp_service:===== WHATSAPP MESSAGE SEND START =====
+INFO:whatsapp_service:Message Details:
+INFO:whatsapp_service:  To: 917036840867
+INFO:whatsapp_service:  Type: Text
+INFO:whatsapp_service:  Template: None
+INFO:whatsapp_service:  Message Length: 146
+INFO:whatsapp_service:API Configuration:
+INFO:whatsapp_service:  API URL: https://graph.facebook.com/v22.0
+INFO:whatsapp_service:  Phone ID: 1033955206448310
+INFO:whatsapp_service:  Token Length: 296
+INFO:whatsapp_service:  Full URL: https://graph.facebook.com/v22.0/1033955206448310/messages
+INFO:whatsapp_service:Sending request to WhatsApp API...
+INFO:whatsapp_service:Payload: {
+  "messaging_product": "whatsapp",
+  "to": "917036840867",
+  "type": "text",
+  "text": {
+    "body": "Hello Shravan,\n\nYour OTP for CityCare Hospital Patient Portal login is: *649462*.\n\nThis OTP is valid for 5 minutes. Do not share this with anyone."
+  }
+}
+INFO:whatsapp_service:Response Status: 200
+INFO:whatsapp_service:Response Text: {"messaging_product":"whatsapp","contacts":[{"input":"917036840867","wa_id":"917036840867"}],"messages":[{"id":"wamid.HBgMOTE3MDM2ODQwODY3FQIAERgSRDZCODAwMUI5NTUyODgzNjAwAA=="}]}
+INFO:whatsapp_service:✓ WhatsApp message sent successfully to 917036840867
+INFO:whatsapp_service:===== WHATSAPP MESSAGE SEND END (SUCCESS) =====
+INFO:whatsapp_service:WhatsApp notification sent immediately (real-time)
+INFO:whatsapp_service:OTP message queued for 917036840867
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:26:56] "POST /api/auth/patient/send-otp HTTP/1.1" 200 -
+/home/ubuntu/Downloads/kimi_clone/.venv/lib/python3.10/site-packages/jwt/api_jwt.py:153: InsecureKeyLengthWarning: The HMAC key is 16 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:09] "POST /api/auth/patient/verify-otp HTTP/1.1" 200 -
+/home/ubuntu/Downloads/kimi_clone/.venv/lib/python3.10/site-packages/jwt/api_jwt.py:371: InsecureKeyLengthWarning: The HMAC key is 16 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:09] "GET /api/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:09] "GET /api/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:11] "GET /api/public/doctors HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:11] "GET /api/public/doctors HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:12] "GET /api/patient/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:12] "GET /api/patient/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:13] "GET /api/patient/payment-history HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:13] "GET /api/admissions?patient_id=P0010 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:13] "GET /api/patient/medical-records HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:13] "GET /api/patient/medical-records HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:13] "GET /api/admissions?patient_id=P0010 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:13] "GET /api/patient/payment-history HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:13] "GET /api/public/doctors HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:13] "GET /api/public/doctors HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:16] "GET /api/doctors/DOC001/unavailable-dates HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:21] "GET /api/doctors/DOC001/availability?date=2026-02-27 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:28] "GET /api/doctors/DOC001/availability?date=2026-03-02 HTTP/1.1" 200 -
+INFO:whatsapp_service:===== APPOINTMENT BOOKING NOTIFICATION START =====
+INFO:whatsapp_service:Appointment data received: {'phone_number': '7036840867', 'patient_name': 'Shravan Thondakuri', 'appointment_id': 'APT0CCC6175', 'doctor_name': 'Dr. Rajiv Menon', 'specialty': 'Cardiology', 'appointment_date': '2026-03-02', 'appointment_time': '11:30', 'appointment_type': 'First_Consultation', 'consultation_mode': 'In-person', 'booking_source': 'Online', 'status': 'Pending_Approval'}
+INFO:whatsapp_service:WhatsApp credentials found. Access Token present: True, Phone ID present: True
+INFO:whatsapp_service:Raw phone number input: 7036840867 -> Extracted digits: 7036840867
+INFO:whatsapp_service:10-digit number detected, assuming India (91): 917036840867
+INFO:whatsapp_service:Validated phone number: 917036840867
+INFO:whatsapp_service:✓ Template used for appointment booking
+INFO:whatsapp_service:Adding template message to queue for 917036840867
+INFO:whatsapp_service:===== WHATSAPP MESSAGE SEND START =====
+INFO:whatsapp_service:Message Details:
+INFO:whatsapp_service:  To: 917036840867
+INFO:whatsapp_service:  Type: Template
+INFO:whatsapp_service:  Template: appointment_booking_pending
+INFO:whatsapp_service:  Message Length: 454
+INFO:whatsapp_service:API Configuration:
+INFO:whatsapp_service:  API URL: https://graph.facebook.com/v22.0
+INFO:whatsapp_service:  Phone ID: 1033955206448310
+INFO:whatsapp_service:  Token Length: 296
+INFO:whatsapp_service:  Full URL: https://graph.facebook.com/v22.0/1033955206448310/messages
+INFO:whatsapp_service:Sending request to WhatsApp API...
+INFO:whatsapp_service:Payload: {
+  "messaging_product": "whatsapp",
+  "to": "917036840867",
+  "type": "template",
+  "template": {
+    "name": "appointment_booking_pending",
+    "language": {
+      "code": "en"
+    },
+    "components": [
+      {
+        "type": "body",
+        "parameters": [
+          {
+            "type": "text",
+            "text": "Shravan Thondakuri"
+          },
+          {
+            "type": "text",
+            "text": "APT0CCC6175"
+          },
+          {
+            "type": "text",
+            "text": "Dr. Rajiv Menon"
+          },
+          {
+            "type": "text",
+            "text": "Cardiology"
+          },
+          {
+            "type": "text",
+            "text": "2026-03-02"
+          },
+          {
+            "type": "text",
+            "text": "11:30"
+          },
+          {
+            "type": "text",
+            "text": "In-person"
+          }
+        ]
+      }
+    ]
+  }
+}
+INFO:whatsapp_service:Response Status: 200
+INFO:whatsapp_service:Response Text: {"messaging_product":"whatsapp","contacts":[{"input":"917036840867","wa_id":"917036840867"}],"messages":[{"id":"wamid.HBgMOTE3MDM2ODQwODY3FQIAERgSNkUzMjY0NjZEQTlDNjM2QUIzAA==","message_status":"accepted"}]}
+INFO:whatsapp_service:✓ WhatsApp message sent successfully to 917036840867
+INFO:whatsapp_service:===== WHATSAPP MESSAGE SEND END (SUCCESS) =====
+INFO:whatsapp_service:WhatsApp notification sent immediately (real-time)
+INFO:whatsapp_service:✓ Appointment booking notification queued for 917036840867
+INFO:whatsapp_service:===== APPOINTMENT BOOKING NOTIFICATION END =====
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:45] "[35m[1mPOST /api/appointments HTTP/1.1[0m" 201 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:46] "GET /api/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:46] "GET /api/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:59] "GET /api/public/doctors HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:27:59] "GET /api/public/doctors HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:28:02] "GET /api/patient/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:28:02] "GET /api/patient/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:28:04] "GET /api/patient/payment-history HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:28:04] "GET /api/admissions?patient_id=P0010 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:28:04] "GET /api/patient/medical-records HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:28:04] "GET /api/patient/payment-history HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:28:04] "GET /api/admissions?patient_id=P0010 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:28:04] "GET /api/patient/medical-records HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:29:08] "OPTIONS /api/auth/staff/login HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:29:08] "POST /api/auth/staff/login HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:29:08] "GET /api/dashboard/receptionist HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:29:08] "GET /api/dashboard/receptionist HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:29:08] "GET /api/appointments?date_from=2026-02-27&date_to=2026-02-27 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:29:08] "GET /api/appointments?status=Pending_Approval HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:29:08] "GET /api/appointments?status=Pending_Approval HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:29:08] "GET /api/appointments?date_from=2026-02-27&date_to=2026-02-27 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:29:18] "GET /api/dashboard/receptionist HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:29:18] "GET /api/dashboard/receptionist HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:29:18] "GET /api/appointments?date_from=2026-02-27&date_to=2026-02-27 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:29:18] "GET /api/appointments?status=Pending_Approval HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:29:18] "GET /api/appointments?date_from=2026-02-27&date_to=2026-02-27 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:29:18] "GET /api/appointments?status=Pending_Approval HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:55:32] "[35m[1mGET /socket.io/?EIO=4&transport=websocket HTTP/1.1[0m" 500 -
+ERROR:werkzeug:Error on request:
+Traceback (most recent call last):
+  File "/home/ubuntu/Downloads/kimi_clone/.venv/lib/python3.10/site-packages/werkzeug/serving.py", line 364, in run_wsgi
+    execute(self.server.app)
+  File "/home/ubuntu/Downloads/kimi_clone/.venv/lib/python3.10/site-packages/werkzeug/serving.py", line 330, in execute
+    write(b"")
+  File "/home/ubuntu/Downloads/kimi_clone/.venv/lib/python3.10/site-packages/werkzeug/serving.py", line 255, in write
+    assert status_set is not None, "write() before start_response"
+AssertionError: write() before start_response
+INFO:whatsapp_service:Raw phone number input: 7036840867 -> Extracted digits: 7036840867
+INFO:whatsapp_service:10-digit number detected, assuming India (91): 917036840867
+INFO:whatsapp_service:===== WHATSAPP MESSAGE SEND START =====
+INFO:whatsapp_service:Message Details:
+INFO:whatsapp_service:  To: 917036840867
+INFO:whatsapp_service:  Type: Text
+INFO:whatsapp_service:  Template: None
+INFO:whatsapp_service:  Message Length: 146
+INFO:whatsapp_service:API Configuration:
+INFO:whatsapp_service:  API URL: https://graph.facebook.com/v22.0
+INFO:whatsapp_service:  Phone ID: 1033955206448310
+INFO:whatsapp_service:  Token Length: 296
+INFO:whatsapp_service:  Full URL: https://graph.facebook.com/v22.0/1033955206448310/messages
+INFO:whatsapp_service:Sending request to WhatsApp API...
+INFO:whatsapp_service:Payload: {
+  "messaging_product": "whatsapp",
+  "to": "917036840867",
+  "type": "text",
+  "text": {
+    "body": "Hello Shravan,\n\nYour OTP for CityCare Hospital Patient Portal login is: *121703*.\n\nThis OTP is valid for 5 minutes. Do not share this with anyone."
+  }
+}
+INFO:whatsapp_service:Response Status: 200
+INFO:whatsapp_service:Response Text: {"messaging_product":"whatsapp","contacts":[{"input":"917036840867","wa_id":"917036840867"}],"messages":[{"id":"wamid.HBgMOTE3MDM2ODQwODY3FQIAERgSNUFBNkYxM0U4NTlBQjE5MTI1AA=="}]}
+INFO:whatsapp_service:✓ WhatsApp message sent successfully to 917036840867
+INFO:whatsapp_service:===== WHATSAPP MESSAGE SEND END (SUCCESS) =====
+INFO:whatsapp_service:WhatsApp notification sent immediately (real-time)
+INFO:whatsapp_service:OTP message queued for 917036840867
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:55:50] "POST /api/auth/patient/send-otp HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:13] "POST /api/auth/patient/verify-otp HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:13] "GET /api/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:13] "GET /api/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:19] "GET /api/public/doctors HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:19] "GET /api/public/doctors HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:23] "GET /api/patient/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:23] "GET /api/patient/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:24] "GET /api/admissions?patient_id=P0010 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:24] "GET /api/patient/payment-history HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:24] "GET /api/patient/medical-records HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:24] "GET /api/patient/payment-history HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:24] "GET /api/admissions?patient_id=P0010 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:24] "GET /api/patient/medical-records HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:25] "GET /api/patient/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:25] "GET /api/patient/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:25] "GET /api/public/doctors HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:25] "GET /api/public/doctors HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:26] "GET /api/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:26] "GET /api/appointments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:43] "OPTIONS /api/auth/staff/login HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:43] "POST /api/auth/staff/login HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:43] "OPTIONS /api/dashboard/billing HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:43] "OPTIONS /api/dashboard/billing HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:43] "GET /api/dashboard/billing HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:43] "GET /api/dashboard/billing HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:47] "OPTIONS /api/billing/bills HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:47] "OPTIONS /api/billing/bills HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:47] "GET /api/billing/bills HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:47] "GET /api/billing/bills HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:47] "GET /api/billing/bills HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:48] "OPTIONS /api/billing/payments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:48] "OPTIONS /api/billing/payments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:48] "GET /api/billing/payments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:48] "GET /api/billing/payments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:48] "GET /api/billing/payments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:49] "OPTIONS /api/billing/ai-prediction HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:49] "OPTIONS /api/billing/ai-prediction HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:49] "GET /api/billing/ai-prediction HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:49] "GET /api/billing/ai-prediction HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:54] "OPTIONS /api/billing/ai-prediction/bill-estimate HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [27/Feb/2026 17:56:54] "POST /api/billing/ai-prediction/bill-estimate HTTP/1.1" 200 -

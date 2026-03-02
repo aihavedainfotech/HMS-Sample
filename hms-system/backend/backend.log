@@ -1,9 +1,86 @@
-nohup: ignoring input
- * Restarting with stat
- * Debugger is active!
- * Debugger PIN: 394-955-784
-(27185) wsgi starting up on http://0.0.0.0:5000
-(27185) accepted ('127.0.0.1', 49352)
-(27185) accepted ('127.0.0.1', 35928)
-127.0.0.1 - - [23/Feb/2026 22:10:07] "POST /api/auth/patient/login HTTP/1.1" 401 200 0.048198
-DEBUG: Database absolute path: /home/ubuntu/Documents/kimi_clone/hms-system/database/hms.db
+Message templates not available (will use fallback messages): No module named 'WHATSAPP_MESSAGE_TEMPLATES'
+INFO:whatsapp_service:WhatsApp message queue worker started
+[AI Bill] Loading dataset and initializing XGBoost model...
+[AI Bill] Error: Dataset not found at /home/ubuntu/Downloads/kimi_clone/bill_prediction/hospital_bill_data(1).csv
+Using PostgreSQL (Supabase)
+PostgreSQL connection successful.
+Using PostgreSQL (Supabase)
+PostgreSQL connection successful.
+  WhatsApp message queue worker initialized
+Starting server on http://0.0.0.0:5000 (debug=False)
+ * Serving Flask app 'app'
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.36:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:05] "GET /api/health HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:06] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:whatsapp_service:Raw phone number input: 8887776665 -> Extracted digits: 8887776665
+INFO:whatsapp_service:10-digit number detected, assuming India (91): 918887776665
+INFO:whatsapp_service:Registration confirmation queued for 918887776665
+INFO:whatsapp_service:===== WHATSAPP MESSAGE SEND START =====
+INFO:whatsapp_service:Message Details:
+INFO:whatsapp_service:  To: 918887776665
+INFO:whatsapp_service:  Type: Text
+INFO:whatsapp_service:  Template: None
+INFO:whatsapp_service:  Message Length: 354
+INFO:whatsapp_service:API Configuration:
+INFO:whatsapp_service:  API URL: https://graph.facebook.com/v22.0
+INFO:whatsapp_service:  Phone ID: 1033955206448310
+INFO:whatsapp_service:  Token Length: 292
+INFO:whatsapp_service:  Full URL: https://graph.facebook.com/v22.0/1033955206448310/messages
+INFO:whatsapp_service:Sending request to WhatsApp API...
+INFO:whatsapp_service:Payload: {
+  "messaging_product": "whatsapp",
+  "to": "918887776665",
+  "type": "text",
+  "text": {
+    "body": "Welcome to CityCare Hospital! \ud83c\udfe5\n\nYour registration has been completed successfully.\n\n\ud83d\udccb Your Patient ID: P0014\n\ud83d\udc64 Name: Stabilized Patient\n\ud83d\udcb0 Registration Fee: \u20b950.0\n\nYou can now book appointments and access your medical records. Log in with your credentials to get started.\n\nFor assistance: +91-XXXXX-XXXXX\n\ud83d\udd10 Keep your Patient ID safe for future reference."
+  }
+}
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:13] "[35m[1mPOST /api/auth/patient/register HTTP/1.1[0m" 201 -
+/home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:371: InsecureKeyLengthWarning: The HMAC key is 16 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:13] "GET /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:whatsapp_service:Response Status: 401
+INFO:whatsapp_service:Response Text: {"error":{"message":"Error validating access token: Session has expired on Friday, 27-Feb-26 06:00:00 PST. The current time is Sunday, 01-Mar-26 03:44:14 PST.","type":"OAuthException","code":190,"error_subcode":463,"fbtrace_id":"As36EV9z_p9dLSbHiYbAVNY"}}
+ERROR:whatsapp_service:✗ Failed to send WhatsApp message: 401 - {"error":{"message":"Error validating access token: Session has expired on Friday, 27-Feb-26 06:00:00 PST. The current time is Sunday, 01-Mar-26 03:44:14 PST.","type":"OAuthException","code":190,"error_subcode":463,"fbtrace_id":"As36EV9z_p9dLSbHiYbAVNY"}}
+INFO:whatsapp_service:===== WHATSAPP MESSAGE SEND END (FAILED) =====
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:24] "GET /api/front-office/recent-activity HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:37] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:54] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:54] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:54] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:55] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:57] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:57] "GET /api/doctors HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:57] "GET /api/doctors HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:58] "OPTIONS /api/front-office/pending-payments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:58] "OPTIONS /api/front-office/today-collections HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:58] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:58] "OPTIONS /api/front-office/pending-payments HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:14:58] "OPTIONS /api/front-office/today-collections HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:15:00] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:15:00] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:15:00] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:15:00] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:15:07] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:15:15] "OPTIONS /api/auth/staff/login HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:15:33] "OPTIONS /api/auth/staff/login HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:15:38] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:16:08] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:16:38] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:16:53] "GET /api/health HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:17:08] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:17:38] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:18:09] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:18:39] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:19:09] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:19:29] "GET /api/health HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:19:29] "GET /api/health HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:19:40] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:20:10] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:20:40] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [01/Mar/2026 17:21:10] "OPTIONS /api/dashboard/front-office HTTP/1.1" 200 -

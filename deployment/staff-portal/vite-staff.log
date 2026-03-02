@@ -1,0 +1,86 @@
+nohup: ignoring input
+
+> staff-portal@0.0.0 dev
+> vite
+
+
+  VITE v7.3.1  ready in 231 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.1.6:5173/
+7:06:52 PM [vite] (client) hmr update /src/pages/auth/StaffLogin.tsx, /src/index.css
+7:06:54 PM [vite] (client) hmr update /src/pages/auth/StaffLogin.tsx, /src/index.css
+7:06:56 PM [vite] (client) hmr update /src/pages/auth/StaffLogin.tsx, /src/index.css
+7:15:16 PM [vite] (client) hmr update /src/App.tsx, /src/index.css
+8:03:10 PM [vite] (client) hmr update /src/pages/auth/StaffLogin.tsx, /src/index.css
+8:09:44 PM [vite] (client) hmr update /src/pages/auth/StaffLogin.tsx, /src/index.css
+8:19:17 PM [vite] (client) hmr update /src/pages/dashboard/BookAppointment.tsx, /src/index.css
+8:19:17 PM [vite] Internal server error: /home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/src/pages/dashboard/BookAppointment.tsx: Unexpected token, expected "," (551:32)
+
+  549 |                             {timeSlots.map((slot, idx) => (
+  550 |                               key = { idx }
+> 551 |                                 variant = { selectedTime === slot.time ? 'default' : 'outline'}
+      |                                 ^
+  552 |                             className={`h-11 font-bold transition-all ${!slot.available
+  553 |                               ? 'opacity-50 line-through bg-slate-50 text-slate-400 hover:bg-slate-50 cursor-not-allowed border-slate-200'
+  554 |                               : selectedTime === slot.time
+  Plugin: vite:react-babel
+  File: /home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/src/pages/dashboard/BookAppointment.tsx:551:32
+  549 |                              {timeSlots.map((slot, idx) => (
+  550 |                                key = { idx }
+  551 |                                  variant = { selectedTime === slot.time ? 'default' : 'outline'}
+      |                                  ^
+  552 |                              className={`h-11 font-bold transition-all ${!slot.available
+  553 |                                ? 'opacity-50 line-through bg-slate-50 text-slate-400 hover:bg-slate-50 cursor-not-allo...
+      at constructor (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:365:19)
+      at TypeScriptParserMixin.raise (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:6599:19)
+      at TypeScriptParserMixin.unexpected (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:6619:16)
+      at TypeScriptParserMixin.expect (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:6899:12)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11661:14)
+      at TypeScriptParserMixin.parseExprAtom (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11331:23)
+      at TypeScriptParserMixin.parseExprAtom (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:4764:20)
+      at TypeScriptParserMixin.parseExprSubscripts (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11081:23)
+      at TypeScriptParserMixin.parseUpdate (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11066:21)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11046:23)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:9837:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:10899:61)
+      at TypeScriptParserMixin.parseExprOps (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:10904:23)
+      at TypeScriptParserMixin.parseMaybeConditional (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:10881:23)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:10831:21)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:9786:20)
+      at TypeScriptParserMixin.parseFunctionBody (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:12093:24)
+      at TypeScriptParserMixin.parseArrowExpression (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:12075:10)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11687:12)
+      at TypeScriptParserMixin.parseExprAtom (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11331:23)
+      at TypeScriptParserMixin.parseExprAtom (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:4764:20)
+      at TypeScriptParserMixin.parseExprSubscripts (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11081:23)
+      at TypeScriptParserMixin.parseUpdate (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11066:21)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11046:23)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:9837:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:10899:61)
+      at TypeScriptParserMixin.parseExprOps (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:10904:23)
+      at TypeScriptParserMixin.parseMaybeConditional (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:10881:23)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:10831:21)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:9786:20)
+      at /home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:10800:39
+      at TypeScriptParserMixin.allowInAnd (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:12426:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:10800:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:12493:17)
+      at TypeScriptParserMixin.parseExprListItem (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:12175:18)
+      at TypeScriptParserMixin.parseCallExpressionArguments (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11252:22)
+      at TypeScriptParserMixin.parseCoverCallAndAsyncArrowHead (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11186:29)
+      at TypeScriptParserMixin.parseSubscript (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11120:19)
+      at TypeScriptParserMixin.parseSubscript (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:9272:18)
+      at TypeScriptParserMixin.parseSubscripts (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11094:19)
+      at TypeScriptParserMixin.parseExprSubscripts (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11085:17)
+      at TypeScriptParserMixin.parseUpdate (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11066:21)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:11046:23)
+      at TypeScriptParserMixin.parseMaybeUnary (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:9837:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:10899:61)
+      at TypeScriptParserMixin.parseExprOps (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:10904:23)
+      at TypeScriptParserMixin.parseMaybeConditional (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:10881:23)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:10831:21)
+      at TypeScriptParserMixin.parseMaybeAssign (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:9786:20)
+      at TypeScriptParserMixin.parseExpressionBase (/home/ubuntu/Downloads/kimi_clone/hms-system/staff-portal/node_modules/@babel/parser/lib/index.js:10784:23)
+8:20:29 PM [vite] (client) hmr update /src/pages/dashboard/BookAppointment.tsx, /src/index.css
+8:24:11 PM [vite] (client) hmr update /src/pages/dashboard/BookAppointment.tsx, /src/index.css

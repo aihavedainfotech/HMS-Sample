@@ -1,8 +1,0 @@
-{
-  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc3MDcwNTIwMiwianRpIjoiZjgzYmVhNGEtOTkzNy00ZTNiLWE4OTktNWUxYTEwYzY2MjVhIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IlJFQzAwMSIsIm5iZiI6MTc3MDcwNTIwMiwiZXhwIjoxNzcwNzA4ODAyLCJyb2xlIjoiUmVjZXB0aW9uaXN0IiwiZGVwYXJ0bWVudCI6IlJlY2VwdGlvbiIsInN1Yl9kZXBhcnRtZW50IjpudWxsLCJuYW1lIjoiUHJpeWEgU2hhcm1hIn0.xJ38NwgWxfzx35zW0gRbr0L2FkG1EG74XWTWKPqAG7w",
-  "department": "Reception",
-  "name": "Priya Sharma",
-  "role": "Receptionist",
-  "staff_id": "REC001",
-  "sub_department": null
-}
