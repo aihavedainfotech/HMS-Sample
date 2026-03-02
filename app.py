@@ -67,13 +67,13 @@ else:
     print(f"DEBUG: DATABASE_URL found, length: {len(DATABASE_URL)}")
 
 # Import database utilities
-import pg8000
+import psycopg2
 
 def get_db_connection():
     """Get database connection"""
     try:
         print(f"DEBUG: Attempting to connect to: {DATABASE_URL[:50]}...")
-        conn = pg8000.connect(DATABASE_URL)
+        conn = psycopg2.connect(DATABASE_URL)
         print("DEBUG: Database connection successful!")
         return conn
     except Exception as e:
