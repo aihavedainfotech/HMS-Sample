@@ -204,7 +204,7 @@ const MedicalRecords = () => {
 
       // Fetch prescriptions and lab orders
       console.log('[MedicalRecords] Fetching medical records');
-      const medicalResponse = await fetch('/api/patient/medical-records', {
+      const medicalResponse = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/patient/medical-records`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -515,7 +515,7 @@ Status: ${prescription.status}
     try {
       setPayingNow(true);
       const token = localStorage.getItem('patientToken');
-      const response = await fetch('/api/patient/pay', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/patient/pay`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -77,7 +77,7 @@ const PatientHome = () => {
       console.log('Fetching dashboard data...', token);
 
       // Fetch appointments
-      const appointmentsResponse = await fetch('/api/appointments', {
+      const appointmentsResponse = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/appointments`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -116,7 +116,7 @@ const PatientHome = () => {
         navigate('/patient/login');
       }
 
-      // const doctorsResponse = await fetch('/api/public/doctors');
+      // const doctorsResponse = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/public/doctors`);
       // if (doctorsResponse.ok) {
       //   const doctorsData = await doctorsResponse.json();
       //   setTopDoctors(doctorsData.doctors?.slice(0, 4) || []);

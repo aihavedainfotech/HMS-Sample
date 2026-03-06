@@ -88,7 +88,7 @@ const BookAppointment = () => {
       // If we want caching, we should use a proper query library like React Query.
       // For now, removing the check to fix empty dropdown issue.
 
-      const response = await fetch('/api/public/doctors');
+      const response = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/public/doctors`);
       if (response.ok) {
         const data = await response.json();
         setDoctors(data.doctors);
@@ -227,7 +227,7 @@ const BookAppointment = () => {
         payment_details: paymentDetails
       };
 
-      const response = await fetch('/api/appointments', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/appointments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

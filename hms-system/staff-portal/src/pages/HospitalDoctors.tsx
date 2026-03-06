@@ -46,7 +46,7 @@ const HospitalDoctors = () => {
 
   const fetchDoctors = async () => {
     try {
-      const response = await fetch('/api/public/doctors');
+      const response = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/public/doctors`);
       if (response.ok) {
         const data = await response.json();
         setDoctors(data.doctors || []);

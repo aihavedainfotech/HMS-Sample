@@ -65,6 +65,7 @@ def simple_seed():
             ('REC001', 'Priya', 'Sharma', 'priya.sharma@hospital.com', '555-1001', 'Receptionist', dept_map['ADMIN'], None, 'Senior Receptionist', '2021-03-15'),
             ('DOC001', 'Dr. Rajiv', 'Menon', 'rajiv.menon@hospital.com', '555-2001', 'Doctor', dept_map['CARD'], None, 'Senior Cardiologist', '2019-05-10'),
             ('DOC002', 'Dr. Anita', 'Desai', 'anita.desai@hospital.com', '555-2002', 'Doctor', dept_map['GEN'], None, 'General Physician', '2020-08-15'),
+            ('BIL001', 'Amit', 'Kumar', 'amit.kumar@hospital.com', '555-4001', 'Billing', dept_map['ADMIN'], None, 'Billing Executive', '2021-06-20'),
         ]
         
         for staff in staff_data:
@@ -172,6 +173,7 @@ def simple_seed():
         print("   Receptionist: REC001 / password123")
         print("   Doctor (Cardiology): DOC001 / password123")
         print("   Doctor (General): DOC002 / password123")
+        print("   Billing: BIL001 / password123")
         
         print("\n👥 PATIENT LOGIN:")
         print("   Patient 1: PAT001 / patient123")

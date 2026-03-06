@@ -53,7 +53,7 @@ const PatientLogin = () => {
     setIsLoading(true);
     try {
       console.log('[PATIENT_LOGIN] Sending OTP for:', data.identifier);
-      const response = await fetch('/api/auth/patient/send-otp', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/auth/patient/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -80,7 +80,7 @@ const PatientLogin = () => {
     setIsLoading(true);
     try {
       console.log('[PATIENT_LOGIN] Verifying OTP for:', patientId);
-      const response = await fetch('/api/auth/patient/verify-otp', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/auth/patient/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ patientId, otp: data.otp }),

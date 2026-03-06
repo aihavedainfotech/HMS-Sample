@@ -95,7 +95,7 @@ const PatientAppointments = () => {
       const id = setTimeout(() => controller.abort(), 10000);
 
       try {
-        const response = await fetch('/api/patient/appointments', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/patient/appointments`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },

@@ -120,7 +120,7 @@ app.json = CustomJSONProvider(app)
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 
 # Enable CORS
-CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:5173", "http://localhost:5174", "https://*.vercel.app", "https://*.onrender.com"]}})
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://localhost:5173", "http://localhost:5174", "https://hms-sample-self.vercel.app", "https://*.vercel.app", "https://*.onrender.com"]}})
 
 # Default prices for lab tests
 LAB_TEST_PRICES = {

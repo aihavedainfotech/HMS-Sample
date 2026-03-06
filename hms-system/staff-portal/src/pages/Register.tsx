@@ -90,7 +90,7 @@ const Register = () => {
     setIsLoading(true);
     try {
       // First step: Send OTP
-      const response = await fetch('/api/auth/patient/register/send-otp', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/auth/patient/register/send-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -151,7 +151,7 @@ const Register = () => {
         otp: otp
       };
 
-      const response = await fetch('/api/auth/patient/register', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/auth/patient/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

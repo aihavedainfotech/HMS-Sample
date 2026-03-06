@@ -129,7 +129,7 @@ const MedicalRecordsSimple = () => {
     try {
       setPayingNow(true);
       const token = localStorage.getItem('patientToken');
-      const response = await fetch('/api/patient/pay', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/patient/pay`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -231,13 +231,13 @@ const MedicalRecordsSimple = () => {
 
       // Fetch all data in parallel
       const [paymentRes, medicalRes, admissionsRes] = await Promise.all([
-        fetch('/api/patient/payment-history', {
+        fetch(`${import.meta.env.VITE_API_URL || '/api'}/patient/payment-history`, {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
-        fetch('/api/patient/medical-records', {
+        fetch(`${import.meta.env.VITE_API_URL || '/api'}/patient/medical-records`, {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
-        fetch(`/api/admissions?patient_id=${patient?.patient_id}`, {
+        fetch(`${import.meta.env.VITE_API_URL || '/api'}/admissions?patient_id=${patient?.patient_id}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         })
       ]);
